@@ -30,6 +30,6 @@ for(int i = len - 1; i > 0; i --)
 
 因为我们在solve函数的开头有`if(!x) return 1;` 这是把0计入windy数的，倘若我们写成*2*那样，就会把0漏掉，虽然能避免错误地出现前导零，但还是会在最后造成答案错误。
 ## 1084. 数字游戏 II
-
 https://www.acwing.com/problem/content/description/1086/
+
 这道题整体上和数字游戏Ⅰ基本相同，本题中dp数组f[i][j][k]表示一共有i位的数字，最高位填j，各位数字之和模n为k时的方案数。
