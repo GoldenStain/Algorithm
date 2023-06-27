@@ -33,3 +33,16 @@ for(int i = len - 1; i > 0; i --)
 https://www.acwing.com/problem/content/description/1086/
 
 这道题整体上和数字游戏Ⅰ基本相同，本题中dp数组f[i][j][k]表示一共有i位的数字，最高位填j，各位数字之和模n为k时的方案数，整体逻辑框架与Windy数相同。
+
+## 蓝桥杯2023 省赛 颜色平衡树
+http://oj.ecustacm.cn/problem.php?id=2071
+启发式合并模板题，启发式合并学习链接：https://zhuanlan.zhihu.com/p/560661911
+
+## 蓝桥杯2023 省赛 买瓜
+http://oj.ecustacm.cn/problem.php?id=2072
+meet in the middle算法，洛谷题解链接：https://www.luogu.com.cn/problem/solution/P9234
+
+## 蓝桥杯2023 省赛 异或和之和
+https://www.luogu.com.cn/problem/P9236
+经典题，洛谷题解链接：https://www.luogu.com.cn/problem/solution/P9236
+w[i][j]表示在所有前缀和当中，第i位上j的个数，j只能取0或者1，注意在初始化w数组时，要把s[0]也算上，因为有从形式如[1,r]的区间存在。
