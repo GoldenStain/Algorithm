@@ -46,3 +46,9 @@ meet in the middle算法，洛谷题解链接：https://www.luogu.com.cn/problem
 https://www.luogu.com.cn/problem/P9236
 经典题，洛谷题解链接：https://www.luogu.com.cn/problem/solution/P9236
 w[i][j]表示在所有前缀和当中，第i位上j的个数，j只能取0或者1，注意在初始化w数组时，要把s[0]也算上，因为有从形式如[1,r]的区间存在。
+
+## codeforces Educational Codeforces Round 151 (Rated for Div. 2) D. Rating System
+
+https://codeforces.com/contest/1845/problem/D
+首先通过前缀和求出前x个数的总和，通过题目可以想到k的取值为每场比赛过后的评分。通过逆向思维，想要求出最终的评分最大，则要求出这个k能够帮你提升评分的最大值。假设，则此后每一轮比赛过后能够提升评分的值为。
+因此，假设当前进行到了第x场比赛，则能够提升评分的最大值为max{sum[0],sum[1]...sum[x-1]} - sum[x]。 所以，我们可以遍历一遍整个sum数组，同时维护当前序列x的最大前缀和max_sum和最大能够提升的评分max_point = max_sum - sum[x] ,最终max_point 所对应的max_sum就是所要求的k
