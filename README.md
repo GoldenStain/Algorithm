@@ -92,3 +92,7 @@ https://codeforces.com/contest/1845/problem/D
 这道题的细节在于会爆炸int，如果不把数组都定义成long long的话，需要把转移方程写成这样：
 f[i] = min(f[i], f[j] + (LL) s * (c[n]- c[j]) + (LL) t[i] * (c[i] - c[j]));
 因为t[]和c[]两个数字相乘可能会爆int，变成负数，所以要先转换成long long
+
+## ACwomg 301. 任务安排2
+
+这道题就是上一道题的斜率优化版本。
