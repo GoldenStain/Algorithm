@@ -86,3 +86,9 @@ https://codeforces.com/contest/1845/problem/D
 ## AcWing 1087. 修剪草坪  
 
 这道题反过来考虑先取最小值，再用总和减去最小值，就是和烽火传递一模一样的题目。
+
+## ACwing 300. 任务安排1
+
+这道题的细节在于会爆炸int，如果不把数组都定义成long long的话，需要把转移方程写成这样：
+f[i] = min(f[i], f[j] + (LL) s * (c[n]- c[j]) + (LL) t[i] * (c[i] - c[j]));
+因为t[]和c[]两个数字相乘可能会爆int，变成负数，所以要先转换成long long
