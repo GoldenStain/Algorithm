@@ -109,3 +109,28 @@ while (hh < tt && (double)(f[q[tt]] - f[q[tt - 1]]) * (c[i] - c[q[tt]]) >= (doub
 while (hh < tt && (double)(f[q[tt]] - f[q[tt - 1]]) * (c[i] - c[q[tt]]) > (double) (c[q[tt]] - c[q[tt - 1]]) * (f[i] - f[q[tt]]))tt--;
 ```
 是大于等于而不是大于。
+
+## ACwing 303.运输小猫
+
+这道题的斜率优化采用的是二位状态f[i][j]，表示用i个饲养员，回收j只小猫的最优解。
+前面的任务安排不需要把f数组初始化为正无穷，因为所有的f[i]都是从初始的f[0]转换而来，只要把f[0]设置为合法的初始值即可。
+而这道题，正确的初始化应该是：
+```
+memset(f, 0x3f, sizeof f);
+for (int i = 0; i <= p; i ++ ) f[i][0] = 0;
+
+```
+状态计算：
+```
+for (int i = 1; i <= m; i ++ )
+        {
+            while (hh < tt && (get_y(q[hh + 1], j) - get_y(q[hh], j)) <= a[i] * (q[hh + 1] - q[hh])) hh ++ ;
+            int k = q[hh];
+            f[j][i] = f[j - 1][k] - a[i] * k + s[k] + a[i] * i - s[i];
+            while (hh < tt && (get_y(q[tt], j) - get_y(q[tt - 1], j)) * (i - q[tt]) >=
+                (get_y(i, j) - get_y(q[tt], j)) * (q[tt] - q[tt - 1])) tt -- ;
+            q[ ++ tt] = i;
+        }
+
+```
+如果初始化时不加上memset的话，那么在计算f[1][i]时就会出错，因为计算f[1][i]时会调用f[0][k]，其中k不等于零，这个值是非法的，应该被设置为正无穷才对，但是因为我们没有初始化，所以f[1][i]直接由它转移而来，最终导致所有的f[][]计算结果均为零。
