@@ -142,3 +142,20 @@ for (int i = 1; i <= m; i ++ )
 ## AcWing 1098. 城堡问题
 
 这种类型的题目要小心是m行n列还是n行m列。
+
+## ACwing 1106. 山峰和山谷
+
+这道题要注意广搜中的一个细节：
+```
+if(i == nx && j == ny) continue;
+            if(i < 1 || i > n) continue;
+            if(j < 1 || j > n) continue;
+            if(w[i][j] != w[nx][ny])
+            {
+                if(w[i][j] > w[nx][ny]) is_peak = false;
+                else is_valley = false;
+                continue;
+            }
+            if(st[i][j]) continue;
+```
+在这一系列的判定条件中，不能把st的那个判定条件放在高度判定条件的前面，否则在计数最后一块没有被遍历的空地时，就会直接全部跳过高度判定，导致山峰数量和山谷数量同时加一。
