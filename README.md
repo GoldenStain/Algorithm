@@ -159,3 +159,48 @@ if(i == nx && j == ny) continue;
             if(st[i][j]) continue;
 ```
 在这一系列的判定条件中，不能把st的那个判定条件放在高度判定条件的前面，否则在计数最后一块没有被遍历的空地时，就会直接全部跳过高度判定，导致山峰数量和山谷数量同时加一。
+
+## leetcode 11. Container With Most Water
+
+首先不用想，这道题的正解显然是双指针。
+一开始我的想法是把l,r的初始位置都放在0,然后一起向右移动,但是这个思路完全不可行，因为在指针移动过程中，h[l]和h[r]的变化是不确定的,区间的长度变化也是不确定的，可能l追r变小,也可能r远离l变大,根本无从下手.
+于是我想到,把l和r分别放在0和n - 1这两个一头一尾的起始位置,这样的话每次移动指针就必然导致区间长度的缩短,就可以专心解决h[l]和h[r]的变化问题.
+一开始写的是:
+```
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int n = height.size();
+        vector <int>& h = height;
+        int l = 0, r = n - 1, now = min(h[l], h[r]);
+        int ans = now * (r - l);
+        while(l < r)
+        {
+            int a = min(h[l + 1], h[r]), b = min(h[l], h[r - 1]);
+            if(a > b) l++, now = a;
+            else r--, now = b;
+            ans = max(ans, now * (r - l));
+        }
+        return ans;
+    }
+};
+```
+根据移动之后min(h[l],h[r])的大小来决定移动的方式,但是这样只能过一半的点,这个做法的错误之处在于:
+每次移动后,确实能够保证移动后的两个可能结果中,我们得到了较大的那一个,但是可能这两者都没有原来的大,我们只比较了移动后的两种结果大小,却忘记了和原来的计算结果进行比较,导致移动指针后ans可能往变小的方向移动.
+正解:
+```
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int l = 0, r = height.size() - 1, ans = 0;
+        while(l < r)
+        {
+            ans = max(ans, min(height[l], height[r]) * (r - l));
+            if(height[l] > height[r]) r--;
+            else l++;
+        }
+        return ans;
+    }
+};
+```
+每次h[l]和h[r]当中较小的那个就是限制因素,每次移动着力于试图让限制因素变大,从而让系统往潜在的变大方向移动.
