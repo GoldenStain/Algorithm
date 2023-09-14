@@ -8,7 +8,7 @@ typedef pair<int, int> PII;
 const int N = 155;
 char g[N][N];
 bool st[N][N];
-int n, m, dist;
+int n, m, dist[N][N];
 PII q[N * N];
 
 int bfs(int x, int y)
@@ -29,9 +29,9 @@ int bfs(int x, int y)
                 continue;
             if (st[tx][ty] || g[tx][ty] == '*')
                 continue;
-            dist++;
+            dist[tx][ty] = dist[sx][sy] + 1;
             if (g[tx][ty] == 'H')
-                return dist;
+                return dist[tx][ty];
             q[++tt] = {tx, ty};
             st[tx][ty] = 1;
         }
