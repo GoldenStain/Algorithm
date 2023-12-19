@@ -1,29 +1,40 @@
-#include <iostream>
-#include <stdio.h>
-#include <vector>
-#include <algorithm>
+#include<bits/stdc++.h>
 using namespace std;
-int x;
-int find_less(vector<int> &v, int x)
+const int N=100100;
+int a[N],n;
+int get_pivot(int q[], int l, int r)
 {
-    int step = 0;
-    int l = 0, r = v.size() - 1;
-    while(l < r)
+    int mid = l + r >> 1;
+    if(q[r] > q[mid]) swap(q[r], q[mid]); // r <= mid
+    if(q[l] < q[r]) swap(q[l], q[r]); // l >= r
+    if(q[l] > q[mid]) swap(q[l], q[mid]); // l <= mid
+    swap(q[l], q[r]); // 中位数在r
+    return q[r];
+}
+void quick_sort(int q[], int l, int r)
+{
+    if(l >= r) return;
+    int i = l, j = r;//注意是向上取整,因为向下取整可能使得x取到q[l]
+    int x = get_pivot(q, l, r);
+    cout << x << endl;
+    while(i < j)
     {
-        int mid = l + r + 1 >> 1;
-        if(v[mid] < x) l = mid;
-        else r = mid - 1;
+        do i++; while(q[i] < x);
+        do j--; while(q[j] > x);
+        if(i < j) swap(q[i], q[j]);
     }
-    if(v[l] > x) return l;
-    return 100;
+    swap(q[i], q[r]);
+    for(int k = l; k <= r; k++)
+        cout << a[k] << ' ';
+    puts("");
+    quick_sort(q, l, i - 1), quick_sort(q, i + 1, r);//不用q[l..i],q[i+1..r]划分的道理和分析4中j的情况一样
 }
 int main()
 {
-    vector<int> a;
-    a = {1, 2, 3, 5, 7};
-    int tmp = find_less(a, 6);
-    cout << tmp << endl;
-    cout << a[tmp] << endl;
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++) scanf("%d",&a[i]);
+    quick_sort(a,1,n);
+    for(int i=1;i<=n;i++) printf("%d ",a[i]);
     system("pause");
     return 0;
 }

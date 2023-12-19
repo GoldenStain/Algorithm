@@ -1,355 +1,203 @@
-#pragma once
-#include <iostream>
-#include <string>
-#include <cassert>
-#include <map>
-#include "koopa.h"
+#include<bits/stdc++.h>
+using namespace std;
 
-
-struct Reg { int reg_name; int reg_offset; };
-std::string reg_names[16] = {"t0", "t1", "t2", "t3", "t4", "t5", "t6",
-    "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "x0"};
-koopa_raw_value_t registers[16];
-int reg_stats[16] = {0};
-koopa_raw_value_t present_value = 0;
-std::map<const koopa_raw_value_t, Reg> value_map;
-int stack_size = 0, stack_top = 0;
-std::map<uintptr_t, int> stack_frame;
-
-
-void visit(const koopa_raw_program_t &program);
-void visit(const koopa_raw_slice_t &slice);
-void visit(const koopa_raw_function_t &func);
-void visit(const koopa_raw_basic_block_t &bb);
-void visit(const koopa_raw_return_t &ret);
-Reg visit(const koopa_raw_value_t &value);
-Reg visit(const koopa_raw_integer_t &integer);
-Reg visit(const koopa_raw_binary_t &binary);
-Reg visit(const koopa_raw_load_t &load);
-void visit(const koopa_raw_store_t &store);
-void visit(const koopa_raw_branch_t &branch);
-void visit(const koopa_raw_jump_t &jump);
-int find_reg(int stat);
-int cal_stack_size(const koopa_raw_slice_t &slice);
-
-
-void visit(const koopa_raw_program_t &program)
+int read()
 {
-    std::cout << "\t.text" << std::endl;
-    visit(program.values);
-    visit(program.funcs);
+	char c=getchar(); int res=0, f=1;
+	while(!isdigit(c)) {if(c=='-') f=-1; c=getchar();}
+	while(isdigit(c)) {res=(res<<3)+(res<<1)+(c^48); c=getchar();}
+	return res*f;
 }
 
+const int N=5e4+1, M=2e5+1;
 
-void visit(const koopa_raw_slice_t &slice)
+int n,m,q,thre;
+
+struct Edge {int x,y,z;} E[M];
+bool cmpz(Edge a, Edge b) {return a.z < b.z;}
+
+int Fa[N];
+int find(int x) {return Fa[x]==x ? x:Fa[x]=find(Fa[x]);}
+int merge(int x,int y)
 {
-    for (size_t i = 0; i < slice.len; ++i)
-    {
-        auto ptr = slice.buffer[i];
-        switch (slice.kind)
-        {
-        case KOOPA_RSIK_FUNCTION:
-            visit(reinterpret_cast<koopa_raw_function_t>(ptr));
-            break;
-        case KOOPA_RSIK_BASIC_BLOCK:
-            visit(reinterpret_cast<koopa_raw_basic_block_t>(ptr));
-            break;
-        case KOOPA_RSIK_VALUE:
-            visit(reinterpret_cast<koopa_raw_value_t>(ptr));
-            break;
-        default:
-            assert(false);
-        }
-    }
+	int fx=find(x), fy=find(y);
+	if(fx!=fy) {Fa[fx]=fy; return 1;}
+	return 0;
 }
 
-
-void visit(const koopa_raw_function_t &func)
+struct edge {int nex,to,v;} a[N<<1];
+int h[N],tot;
+void adde(int x,int y,int z)
 {
-    std::cout << "\t.globl " << (func->name + 1) << std::endl;
-    std::cout << (func->name + 1) << ":" << std::endl;
-    visit(func->bbs);
+	a[++tot]=(edge){h[x],y,z}, h[x]=tot;
+	a[++tot]=(edge){h[y],x,z}, h[y]=tot;
 }
 
-
-void visit(const koopa_raw_basic_block_t &bb)
+int dep[N],val[N],sq[N<<1],Ti,in[N];
+void dfs_init(int u,int f)
 {
-    int stack_frame_size = cal_stack_size(bb->insts);
-    if (stack_frame_size > 0)
-    {
-        std::cout << "\taddi  sp, sp, -" << stack_frame_size * 4 << std::endl;
-        stack_size += stack_frame_size * 4;
-    }
-    std::cout << bb->name + 1 << ":" << std::endl;
-    visit(bb->insts);
+	dep[u]=dep[f]+1, sq[in[u]=++Ti]=u;
+	for(int i=h[u];i;i=a[i].nex)
+	{
+		int v=a[i].to;
+		if(v!=f) val[v]=a[i].v, dfs_init(v,u), sq[++Ti]=u;
+	}
+}
+#define _min(x,y) (in[x]<in[y] ? x:y)
+int lg2[N<<1],minn[N<<1][18];
+void build_ST()
+{
+	lg2[0]=-1;
+	for(int i=1;i<=Ti;++i) lg2[i]=lg2[i>>1]+1, minn[i][0]=sq[i];
+	for(int i=1;(1<<i)<=Ti;++i)
+	for(int l=1;l+(1<<i)-1<=Ti;++l)
+		minn[l][i] = _min(minn[l][i-1], minn[l+(1<<(i-1))][i-1]);
+}
+int LCA(int x,int y)
+{
+	x=in[x], y=in[y];
+	if(x>y) swap(x,y);
+	int k=lg2[y-x+1];
+	return _min(minn[x][k], minn[y-(1<<k)+1][k]);
+}
+#undef _min
+
+struct Que {int l,r,K,C,id;} lx[N]; int Q,answer[N];
+bool cmpq(Que a,Que b) {return a.K < b.K;}
+
+struct data {int v,id;};
+vector<data> G[N]; int ans[N*100],block,blo[N];
+pair<int,int> sta[N]; int top;
+
+void addq(int u,int v,int id)
+{
+	int lca=LCA(u,v);
+	G[u].emplace_back((data){lca,id});
+	G[v].emplace_back((data){lca,id});
 }
 
-
-Reg visit(const koopa_raw_value_t &value)
+int maxx[N<<2],A[N];
+void add(int u,int v)
 {
-    koopa_raw_value_t old_value = present_value;
-    present_value = value;
-    if (value_map.count(value))
-    {
-        if (value_map[value].reg_name == -1)
-        {
-            int reg_name = find_reg(1);
-            value_map[value].reg_name = reg_name;
-            std::cout << "\tlw    " << reg_names[reg_name] << ", " <<
-                value_map[value].reg_offset << "(sp)" << std::endl;
-        }
-        present_value = old_value;
-        return value_map[value];
-    }
-
-    const auto &kind = value->kind;
-    struct Reg result_var = {-1, -1};
-    switch (kind.tag)
-    {
-    case KOOPA_RVT_RETURN:
-        visit(kind.data.ret);
-        break;
-    case KOOPA_RVT_INTEGER:
-        result_var = visit(kind.data.integer);
-        break;
-    case KOOPA_RVT_BINARY:
-        result_var = visit(kind.data.binary);
-        value_map[value] = result_var;
-        break;
-    case KOOPA_RVT_ALLOC:
-        result_var.reg_offset = stack_top;
-        stack_top += 4;
-        value_map[value] = result_var;
-        break;
-    case KOOPA_RVT_LOAD:
-        result_var = visit(kind.data.load);
-        value_map[value] = result_var;
-        break;
-    case KOOPA_RVT_STORE:
-        visit(kind.data.store);
-        break;
-    case KOOPA_RVT_BRANCH:
-        visit(kind.data.branch);
-        break;
-    case KOOPA_RVT_JUMP:
-        visit(kind.data.jump);
-        break;
-    default:
-        assert(false);
-    }
-    present_value = old_value;
-    return result_var;
+	int p=blo[u];
+	for(int i=1;i<blo[u];++i) sta[++top] = make_pair(i,maxx[i]), maxx[i] = max(maxx[i],v);
+	for(int i=(p-1)*block+1; i<=u; ++i) sta[++top] = make_pair(-i,A[i]), A[i] = max(A[i],v);
+}
+int ask(int u) {return max(maxx[blo[u]], A[u]);}
+void roll_back(int tar)
+{
+	while(top>tar)
+	{
+		int i=sta[top].first, v=sta[top].second; --top;
+		if(i>0) maxx[i]=v; else A[-i]=v;
+	}
+}
+void dfs_calc(int u,int f)
+{
+	int prev=top;
+	add(dep[u],val[u]);
+	for(auto now : G[u])
+	{
+		int v=now.v, id=now.id;
+		if(id>0) answer[id] = max(answer[id], ask(dep[v]+1));
+		else ans[-id] = max(ans[-id], ask(dep[v]+1));
+	}
+	for(int i=h[u];i;i=a[i].nex)
+	{
+		int v=a[i].to;
+		if(v!=f) dfs_calc(v,u);
+	}
+	roll_back(prev);
 }
 
-
-void visit(const koopa_raw_return_t &ret)
+#define ls (pos<<1)
+#define rs (pos<<1|1)
+#define mid ((l+r)>>1)
+void build(int pos,int l,int r)
 {
-    koopa_raw_value_t ret_value = ret.value;
-    struct Reg result_var = visit(ret_value);
-    std::cout << "\tmv    a0, " << reg_names[result_var.reg_name] << std::endl;
-    if (stack_size > 0 && stack_size <= 2048)
-        std::cout << "\taddi  sp, sp, " << stack_size << std::endl;
-    else if (stack_size > 2048)
-    {
-        std::cout << "\tli    t0, " << stack_size << std::endl;
-        std::cout << "\taddi  sp, sp, t0" << std::endl;
-    }
-    stack_size = 0;
-    std::cout << "\tret" << std::endl;
+	if(l==r) {maxx[pos]=A[l]; return;}
+	build(ls,l,mid); build(rs,mid+1,r);
+	maxx[pos] = max(maxx[ls],maxx[rs]);
 }
-
-
-Reg visit(const koopa_raw_integer_t &integer)
+int ask(int pos,int ql,int qr,int l,int r)
 {
-    int32_t int_val = integer.value;
-    struct Reg result_var = {-1, -1};
-    if (int_val == 0) { result_var.reg_name = 15; return result_var; }
-    result_var.reg_name = find_reg(0);
-    std::cout << "\tli    " << reg_names[result_var.reg_name] << ", " <<
-        int_val << std::endl;
-    return result_var;
+	if(ql>qr) return 0;
+	if(ql<=l && r<=qr) return maxx[pos];
+	int res=0;
+	if(ql<=mid) res = max(res, ask(ls,ql,qr,l,mid));
+	if(qr>mid) res = max(res, ask(rs,ql,qr,mid+1,r));
+	return res;
 }
+#undef ls
+#undef rs
+#undef mid
 
-
-Reg visit(const koopa_raw_binary_t &binary)
+int id[N];
+int main()
 {
-    struct Reg left_val = visit(binary.lhs);
-    int left_reg = left_val.reg_name;
-    int old_stat = reg_stats[left_reg];
-    reg_stats[left_reg] = 2;
-    struct Reg right_val = visit(binary.rhs);
-    int right_reg = right_val.reg_name;
-    reg_stats[left_reg] = old_stat;
-    struct Reg result_var = {find_reg(1), -1};
-    std::string left_name = reg_names[left_reg];
-    std::string right_name = reg_names[right_reg];
-    std::string result_name = reg_names[result_var.reg_name];
-    switch (binary.op)
-    {
-    case 0:  // ne
-        if (right_name == "x0")
-        {
-            std::cout << "\tsnez  " << result_name << ", " << left_name <<
-                std::endl;
-            break;
-        }
-        if (left_name == "x0")
-        {
-            std::cout << "\tsnez  " << result_name << ", " << right_name <<
-                std::endl;
-            break;
-        }
-        std::cout << "\txor   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        std::cout << "\tsnez  " << result_name << ", " << result_name <<
-            std::endl;
-        break;
-    case 1:  // eq
-        if (right_name == "x0")
-        {
-            std::cout << "\tseqz  " << result_name << ", " << left_name <<
-                std::endl;
-            break;
-        }
-        if (left_name == "x0")
-        {
-            std::cout << "\tseqz  " << result_name << ", " << right_name <<
-                std::endl;
-            break;
-        }
-        std::cout << "\txor   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        std::cout << "\tseqz  " << result_name << ", " << result_name <<
-            std::endl;
-        break;
-    case 2:  // gt
-        std::cout << "\tsgt   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        break;
-    case 3:  // lt
-        std::cout << "\tslt   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        break;
-    case 4:  // ge
-        std::cout << "\tslt   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        std::cout << "\txori  " << result_name << ", " << result_name << ", 1"
-            << std::endl;
-        break;
-    case 5:  // le
-        std::cout << "\tsgt   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        std::cout << "\txori  " << result_name << ", " << result_name << ", 1"
-            << std::endl;
-        break;
-    case 6:  // add
-        std::cout << "\tadd   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        break;
-    case 7:  // sub
-        std::cout << "\tsub   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        break;
-    case 8:  // mul
-        std::cout << "\tmul   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        break;
-    case 9:  // div
-        std::cout << "\tdiv   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        break;
-    case 10:  // mod
-        std::cout << "\trem   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        break;
-    case 11:  // and
-        std::cout << "\tand   " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        break;
-    case 12:  // or
-        std::cout << "\tor    " << result_name << ", " << left_name << ", " <<
-            right_name << std::endl;
-        break;
-    default:
-        assert(false);
-    }
-    return result_var;
-}
-
-
-Reg visit(const koopa_raw_load_t &load)
-{
-    koopa_raw_value_t src = load.src;
-    int reg_name = find_reg(1), reg_offset = value_map[src].reg_offset;
-    struct Reg result_var = {reg_name, reg_offset};
-    std::cout << "\tlw    " << reg_names[reg_name] << ", " << reg_offset <<
-        "(sp)" << std::endl;
-    return result_var;
-}
-
-
-void visit(const koopa_raw_store_t &store)
-{
-    struct Reg value = visit(store.value);
-    koopa_raw_value_t dest = store.dest;
-    assert(value_map.count(dest));
-    if (value_map[dest].reg_offset == -1)
-    {
-        value_map[dest].reg_offset = stack_top;
-        stack_top += 4;
-    }
-    int reg_name = value.reg_name, reg_offset = value_map[dest].reg_offset;
-    std::cout << "\tsw    " << reg_names[reg_name] << ", " << reg_offset <<
-        "(sp)" << std::endl;
-}
-
-
-void visit(const koopa_raw_branch_t &branch)
-{
-    std::string true_label = branch.true_bb->name + 1;
-    std::string false_label = branch.false_bb->name + 1;
-    int cond_reg = visit(branch.cond).reg_name;
-    std::cout << "\tbnez  " << reg_names[cond_reg] << ", " << true_label
-        << std::endl;
-    std::cout << "\tj     " << false_label << std::endl;
-}
-
-
-void visit(const koopa_raw_jump_t &jump)
-{
-    std::string target_label = jump.target->name + 1;
-    std::cout << "\tj     " << target_label << std::endl;
-}
-
-
-int find_reg(int stat)
-{
-    for (int i = 0; i < 15; i++)
-        if (reg_stats[i] == 0)
-        {
-            registers[i] = present_value;
-            reg_stats[i] = stat;
-            return i;
-        }
-    assert(false);
-    return -1;
-}
-
-
-int cal_stack_size(const koopa_raw_slice_t &slice)
-{
-    assert(slice.kind == KOOPA_RSIK_VALUE);
-    int stack_frame_size = 0;
-    for (int i = 0; i < slice.len; i++)
-    {
-        auto ptr = slice.buffer[i];
-        auto value = reinterpret_cast<koopa_raw_value_t>(ptr);
-        if (value->kind.tag == KOOPA_RVT_ALLOC &&
-            value->ty->tag != KOOPA_RTT_UNIT)
-            stack_frame[reinterpret_cast<uintptr_t>(value)]
-                = stack_frame_size++;
-    }
-    if (stack_frame_size & 3)
-        stack_frame_size = ((stack_frame_size >> 2) + 1) << 2;
-    return stack_frame_size;
+	n=read(), m=read(), q=read();
+	for(int i=1;i<=m;++i)
+		E[i]=(Edge){read(),read(),read()};
+	sort(E+1,E+m+1,cmpz);
+	for(int i=1;i<=n;++i) Fa[i]=i;
+	for(int i=1;i<=m;++i)
+	{
+		if(merge(E[i].x, E[i].y))
+			adde(E[i].x, E[i].y, E[i].z);
+	}
+	dfs_init(1,0); build_ST();
+	thre=100;
+	for(int i=1,l,r,K,C;i<=q;++i)
+	{
+		l=read(), r=read(), K=read(), C=read();
+		if(K>thre)
+		{
+			for(int u=(l-1)/K*K+C,v=0; u<=r; u+=K)
+			{
+				if(u<l) continue;
+				if(v) addq(u,v,i); v=u;
+			}
+		}
+		else lx[++Q]=(Que){l,r,K,C,i};
+	}
+	sort(lx+1,lx+Q+1,cmpq);
+	
+	for(int i=1,tt=0,K=0;i<=Q;++i)
+	{
+		if(lx[i].K!=K)
+		{
+			K=lx[i].K;
+			for(int C=0;C<K;++C)
+			for(int u=C?C:K,v=0; u<=n; v=u,u+=K)
+			{
+				++tt;
+				if(v) addq(u,v,-tt);
+			}
+		}
+	}
+	block=sqrt(n);
+	for(int i=1;i<=n;++i) blo[i]=(i-1)/block+1;
+	dfs_calc(1,0);
+	
+	for(int i=1,tt=0,K=0;i<=Q;++i)
+	{
+		if(lx[i].K!=K)
+		{
+			K=lx[i].K;
+			int prev=tt;
+			for(int C=0;C<K;++C)
+			for(int u=C?C:K;u<=n;u+=K)
+			{
+				++tt;
+				A[tt-prev]=ans[tt], id[u]=tt-prev;
+			}
+			build(1,1,n);
+		}
+		int l = (lx[i].l-1)/K*K+lx[i].C;
+		if(l<lx[i].l) l+=K;
+		int r = lx[i].r/K*K+lx[i].C;
+		if(r>lx[i].r) r-=K;
+		if(l<=r) answer[lx[i].id] = ask(1,id[l]+1,id[r],1,n);
+	}
+	for(int i=1;i<=q;++i) printf("%d\n",answer[i]);
 }
