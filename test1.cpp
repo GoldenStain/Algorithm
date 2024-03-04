@@ -2,16 +2,23 @@
 #include <stdio.h>
 #include <algorithm>
 #include <string>
-#include <vector>
+#include <string.h>
 #define For(i, j, n) for(int i = j ; i <= n ; ++i)
 using namespace std;
 
-vector<int> a;
+void mystrcpy(char *dest, char *src, int len)
+{
+  strncpy(dest, src, len);
+  
+}
 
 int main()
-{   
-    a.push_back(1);
-    a.back() ++;
-    cout << a[0] << endl;
+{
+    char dest[32] = "", src[32] = "abcdefg";
+    mystrcpy(dest, src, 2);
+    for(int i = 0; i <= 2; i++)
+        if(dest[i] == '\0')
+            cout << 'y' << endl;
+    cout << strlen(dest) << endl << dest << endl;
     return 0;
 }

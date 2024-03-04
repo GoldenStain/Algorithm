@@ -1,93 +1,110 @@
 #include<bits/stdc++.h>
-#define For(i, j, n) for (int i = j; i <= n; ++i)
+
 using namespace std;
+typedef long long  LL;
+const int N = 2000010;
 
-const int N = 2e6 + 10;
-typedef long long LL;
-typedef pair<LL, int> PLI;
+int A, B, C, m;// 层，行，列， 攻击轮数
+LL s[N], b[N], bp[N];// 生命值， 差分数组，备份差分数组
+int op[N / 2][7];// 攻击范围及伤害
 
-int A, B, C, m, num = 1, now, op[N / 2][7]; // now记录当前是第几次操作,opidx记录每个点的最后一次操作处于第几次
-LL hp[N], dmg[N];
-
-int xytok(int x, int y, int z)
+// 差分数组八个方向偏移量
+int d[8][4] = 
 {
-    return ((x - 1) * B + (y - 1)) * C + z;
+    {0, 0, 0,  1},
+    {0, 0, 1, -1},
+    {0, 1, 0, -1},
+    {0, 1, 1,  1},
+    {1, 0, 0, -1},
+    {1, 0, 1,  1},
+    {1, 1, 0,  1},
+    {1, 1, 1, -1},
+};
+
+int get(int i, int j, int k)// 压维映射函数
+{
+    return ((i-1) * B + j-1) * C + k;
 }
-
-void Operate(LL b[], int x1, int y1, int z1, int x2, int y2, int z2, LL h)
+bool check(int mid)
 {
-    b[xytok(x1, y1, z1)] += h; // 伤害为 负
-    b[xytok(x1, y1, z2 + 1)] -= h;
-    b[xytok(x1, y2 + 1, z1)] -= h;
-    b[xytok(x1, y2 + 1, z2 + 1)] += h;
-    b[xytok(x2 + 1, y1, z1)] -= h;
-    b[xytok(x2 + 1, y1, z2 + 1)] += h;
-    b[xytok(x2 + 1, y2 + 1, z1)] += h;
-    b[xytok(x2 + 1, y2 + 1, z2 + 1)] -= h;
-}
-
-void add(LL b[], int i, int j, int k)
-{
-        b[xytok(i, j, k)]+=
-		b[xytok(i-1, j, k)]+
-		b[xytok(i, j-1, k)]+
-		b[xytok(i, j, k-1)]-	
-		b[xytok(i-1, j-1, k)]-	
-		b[xytok(i-1, j, k-1)]-	
-		b[xytok(i, j-1, k-1)]+	
-		b[xytok(i-1, j-1, k-1)];			    
-}
-
-bool check(int x)
-{
-    memset(dmg, 0, sizeof dmg);
-    for (int i = 1; i <= x; i++) // x1,x2,y1,y2,z1,z2,h
+    memcpy(b, bp, sizeof b);
+    for(int i = 1; i <= mid; i ++ )
     {
-        int x1 = op[i][0], x2 = op[i][1], y1 = op[i][2], y2 = op[i][3], z1 = op[i][4], z2 = op[i][5], h = op[i][6];
-        Operate(dmg, x1, y1, z1, x2, y2, z2, (LL)h);
+        int x1 = op[i][0], x2 = op[i][1], y1 = op[i][2], y2  = op[i][3], z1 = op[i][4], z2 = op[i][5], h = op[i][6];
+        b[get(x1,     y1,         z1)] += -h; // 伤害为 负
+        b[get(x1,     y1,     z2 + 1)] -= -h;
+        b[get(x1,     y2 + 1,     z1)] -= -h;
+        b[get(x1,     y2 + 1, z2 + 1)] += -h;
+        b[get(x2 + 1, y1,         z1)] -= -h;
+        b[get(x2 + 1, y1,     z2 + 1)] += -h;
+        b[get(x2 + 1, y2 + 1,     z1)] += -h;
+        b[get(x2 + 1, y2 + 1, z2 + 1)] -= -h;
+        
     }
-    for (int i = 1, cnt = 1; i <= A; i++)
-        for (int j = 1; j <= B; j++)
-            for (int k = 1; k <= C; k++, cnt++)
+   
+    /* 求前缀和
+
+     s[i][j][k] = s[i-1][j][k]+s[i][j-1][k]+s[i][j][k-1]-s[i-1][j-1][k]-s[i-1][j][k-1]-s[i][j-1][k-1]+s[i-1][j-1][k-1]+b[i][j][k]
+
+     */
+    memset(s, 0, sizeof s);
+    for(int i = 1; i <= A; i ++ )
+        for(int j = 1; j <= B; j ++ )
+            for(int k = 1; k <= C; k ++ )
             {
-                add(dmg, i, j, k);
-                if (dmg[cnt] > hp[cnt])
-                    return 1;
+                s[get(i, j ,k)] = b[get(i, j, k)];
+                for(int u = 1; u < 8; u ++ )
+                {
+                    int x = i - d[u][0], y = j - d[u][1], z = k - d[u][2], t = d[u][3];
+                    s[get(i, j, k)] -= s[get(x, y, z)] * t;
+
+                }
+                if(s[get(i, j, k)] < 0) return true;
             }
-    return 0;
-}
 
-int search()
-{
-    int l = 1, r = m;
-    while (l < r)
-    {
-        int mid = l + r >> 1;
-        if (check(mid))
-            r = mid;
-        else
-            l = mid + 1;
-    }
-    return r;
-}
+    return false;
 
+}
 int main()
 {
-    int tmp;
+
     scanf("%d%d%d%d", &A, &B, &C, &m);
-    for (int i = 1; i <= A; i++)
-        for (int j = 1; j <= B; j++)
-            for (int k = 1; k <= C; k++, num++)
-            {
-                scanf("%lld", &hp[num]);
-                // Operate(bp, i, j, k, i, j, k, hp[num]);
-            }
-    num--;
-    for (int i = 1; i <= m; i++)
-    {
-        for (int j = 0; j < 7; j++)
+
+    // 生命值读入
+    for(int i = 1; i <= A; i ++ )
+        for(int j = 1; j <= B; j ++ )
+            for(int k = 1; k <= C; k ++ )
+                scanf("%lld", &s[get(i, j, k)]);
+
+    // 求差分数组 b[]
+    for(int i = 1; i <= A; i ++ )
+        for(int j = 1; j <= B; j ++ )
+            for(int k = 1; k <= C; k ++)
+                for(int u = 0; u < 8; u ++ )
+                {
+                    int x = i - d[u][0], y = j - d[u][1], z = k - d[u][2], t = d[u][3];
+                    bp[get(i, j, k)] += s[get(x, y, z)] * t;
+
+
+                }
+
+    // 读入覆盖范围，攻击伤害 
+    for(int i = 1; i <= m; i ++ )
+        for(int j = 0; j < 7; j ++ )
             scanf("%d", &op[i][j]);
+        
+    // 二分
+    int l = 1, r = m;
+    while(l < r)
+    {
+        int mid = l + r >> 1;
+        if(check(mid)) r = mid;
+        else l = mid + 1;
     }
-    printf("%d\n", search());
+
+    printf("%d\n", r);
+
+
     return 0;
+    
 }
