@@ -1,21 +1,33 @@
-#include <iostream>
-#include <stdio.h>
-#include <algorithm>
-#include <string>
-#include <string.h>
-#define For(i, j, n) for(int i = j ; i <= n ; ++i)
-using namespace std;
-
-void mystrcpy(char *dest, char *src, int len)
+SYSCALL_DEFINE3(GetMax, int a, int b, int c)
 {
-  strncpy(dest, src, len);
-  
+  if(a > b)
+    b = a;
+  if(b > c)
+    c = b;
+  return c;
 }
 
-int main(int argc, char* argv[])
+SYSCALL_DEFINE0(GetPID)
 {
-    char d[10], s[] = "abc";
-    strncpy(d, s, 3);
-    cout << strlen(d) << endl;
+    return current->pid;
+}
+
+SYSCALL_DEFINE1 (GetCMD, char *buf)
+{
+    strcpy(buf, current->comm);
     return 0;
 }
+
+asmlinkage long sys_GetMax(int a, int b, int c);
+asmlinkage long sys_GetPID();
+asmlinkage long GetCMD(char __user*, buf);
+
+
+#define __NR_getmax 548
+__SYSCALL(__NR_getmax, sys_GetMax)
+
+#define __NR_getpid 549
+__SYSCALL(__NR_getpid, sys_GetPID)
+
+#define __NR_getcmd 550
+__SYSCALL(__NR_getcmd, sys_GetCMD)
