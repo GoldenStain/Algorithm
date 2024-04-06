@@ -14,7 +14,7 @@ int get_pivot(int q[], int l, int r)
 void quick_sort(int q[], int l, int r)
 {
     if(l >= r) return;
-    int i = l, j = r;//注意是向上取整,因为向下取整可能使得x取到q[l]
+    int i = l, j = r;//注意是向上取整,因为向下取整可能使得x取到q[l]t
     int x = get_pivot(q, l, r);
     cout << x << endl;
     while(i < j)
