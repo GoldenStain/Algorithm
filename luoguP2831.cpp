@@ -51,17 +51,7 @@ int Log[M];
 
 void get_zero()
 {
-    /*for (int i = 0; i < M; i++)
-    {
-        for (int j = 0; j < 18; j++)
-        {
-            if (!((i >> j) & 1))
-            {
-                first_zero[i] = j;
-                break;
-            }
-        }
-    }*/
+    
     Log[0] = -1;
     For(i, 1, M)
         Log[i] = Log[i >> 1] + 1;
