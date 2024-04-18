@@ -1,42 +1,114 @@
-#include<bits/stdc++.h>
-#define rep(a,b,c) for(int c(a);c<=(b);++c)
-#define drep(a,b,c) for(int c(a);c>=(b);--c)
+//最优二叉查找树
+ 
+#include <iostream>
+ 
 using namespace std;
-inline int read()
+ 
+const int MaxVal = 9999;
+ 
+const int n = 5;
+//搜索到根节点和虚拟键的概率
+double p[n + 1] = {-1,0.15,0.1,0.05,0.1,0.2};
+double q[n + 1] = {0.05,0.1,0.05,0.05,0.05,0.1};
+ 
+int root[n + 1][n + 1];//记录根节点
+double w[n + 2][n + 2];//子树概率总和
+double e[n + 2][n + 2];//子树期望代价
+ 
+void optimalBST(double *p,double *q,int n)
 {
-	int res=0;char ch=getchar();while(ch<'0'||ch>'9')ch=getchar();
-	while(ch<='9'&&ch>='0')res=res*10+(ch^48),ch=getchar();return res;
+	//初始化只包括虚拟键的子树
+	for (int i = 1;i <= n + 1;++i)
+	{
+		w[i][i - 1] = q[i - 1];
+		e[i][i - 1] = q[i - 1];
+	}
+ 
+	//由下到上，由左到右逐步计算
+	for (int len = 1;len <= n;++len)
+	{
+		for (int i = 1;i <= n - len + 1;++i)
+		{
+			int j = i + len - 1;
+			e[i][j] = MaxVal;
+			w[i][j] = w[i][j - 1] + p[j] + q[j];
+			//求取最小代价的子树的根
+			for (int k = i;k <= j;++k)
+			{
+				double temp = e[i][k - 1] + e[k + 1][j] + w[i][j];
+				if (temp < e[i][j])
+				{
+					e[i][j] = temp;
+					root[i][j] = k;
+				}
+			}
+		}
+	}
 }
-typedef long long ll;
-const int N=5e4+10,M=1e5+5;
-int a[N],n,mn[N],mx[N],cnt[N<<2];ll ans;
-inline void Solve(int l,int r)
+ 
+//输出最优二叉查找树所有子树的根
+void printRoot()
 {
-	if(l==r){++ans;return;} int mid=(l+r)>>1;
-	mn[mid+1]=a[mid+1];mx[mid+1]=a[mid+1];
-	rep(mid+2,r,i)mn[i]=min(mn[i-1],a[i]),mx[i]=max(mx[i-1],a[i]);
-	mn[mid]=a[mid];mx[mid]=a[mid];
-	drep(mid-1,l,i)mn[i]=min(mn[i+1],a[i]),mx[i]=max(mx[i+1],a[i]);
-	int pr=mid+1,ppr=mid+1;drep(mid,l,pl)
+	cout << "各子树的根：" << endl;
+	for (int i = 1;i <= n;++i)
 	{
-		while(pr<=r&&mx[pr]<mx[pl]){++cnt[mn[pr]+pr+M];++pr;}
-		while(ppr<pr&&mn[ppr]>mn[pl]){--cnt[mn[ppr]+ppr+M];++ppr;}
-		ans+=cnt[mx[pl]+pl+M];int tr=mx[pl]+pl-mn[pl];
-		if(mid<tr&&tr<ppr)++ans;
+		for (int j = 1;j <= n;++j)
+		{
+			cout << root[i][j] << " ";
+		}
+		cout << endl;
 	}
-	for(int i=ppr;i<pr;++i)cnt[mn[i]+i+M]=0;
-	int pl=mid,ppl=mid;rep(mid+1,r,pr)
-	{
-		while(pl>=l&&mx[pl]<mx[pr]){++cnt[mn[pl]-pl+M];--pl;}
-		while(ppl>pl&&mn[ppl]>mn[pr]){--cnt[mn[ppl]-ppl+M];--ppl;}
-		ans+=cnt[mx[pr]-pr+M];int tl=mn[pr]-mx[pr]+pr;
-		if(ppl<tl&&tl<=mid)++ans;
-	}
-	for(int i=ppl;i>pl;--i)cnt[mn[i]-i+M]=0;
-	Solve(l,mid);Solve(mid+1,r);
+	cout << endl;
 }
+ 
+//打印最优二叉查找树的结构
+//打印出[i,j]子树，它是根r的左子树和右子树
+void printOptimalBST(int i,int j,int r)
+{
+	int rootChild = root[i][j];//子树根节点
+	if (rootChild == root[1][n])
+	{
+		//输出整棵树的根
+		cout << "k" << rootChild << "是根" << endl;
+		printOptimalBST(i,rootChild - 1,rootChild);
+		printOptimalBST(rootChild + 1,j,rootChild);
+		return;
+	}
+ 
+	if (j < i - 1)
+	{
+		return;
+	}
+	else if (j == i - 1)//遇到虚拟键
+	{
+        cout << "virtual : " << r << endl;
+        cout << "real : " << i << " " << j  << endl;
+		if (j < r)
+		{
+			cout << "d" << j << "是" << "k" << r << "的左孩子" << endl;
+		}
+		else
+			cout << "d" << j << "是" << "k" << r << "的右孩子" << endl;
+		return;
+	}
+	else//遇到内部结点
+	{
+		if (rootChild < r)
+		{
+			cout << "k" << rootChild << "是" << "k" << r << "的左孩子" << endl;
+		}
+		else
+			cout << "k" << rootChild << "是" << "k" << r << "的右孩子" << endl;
+	}
+ 
+	printOptimalBST(i,rootChild - 1,rootChild);
+	printOptimalBST(rootChild + 1,j,rootChild);
+}
+ 
 int main()
 {
-	n=read();rep(1,n,i)a[i]=read();
-	Solve(1,n);printf("%lld\n",ans);
+	optimalBST(p,q,n);
+	printRoot();
+	cout << "最优二叉树结构：" << endl;
+	printOptimalBST(1,n,-1);
 }
