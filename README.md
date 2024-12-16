@@ -281,4 +281,5 @@ if (db.count(ns))
 [![pAqxldg.png](https://s21.ax1x.com/2024/12/16/pAqxldg.png)](https://imgse.com/i/pAqxldg)
 
 由于交换后，最后的一堆元素是倒序的，字典序是新顺序当中最大的，我们reverse一遍，就能变成最小的了。
-   
+
+代码：https://www.cnblogs.com/smartljy/p/18611098
