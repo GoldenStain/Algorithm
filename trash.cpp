@@ -1,114 +1,171 @@
-//最优二叉查找树
- 
+#include <cmath>
+#include <cstdio>
 #include <iostream>
- 
-using namespace std;
- 
-const int MaxVal = 9999;
- 
-const int n = 5;
-//搜索到根节点和虚拟键的概率
-double p[n + 1] = {-1,0.15,0.1,0.05,0.1,0.2};
-double q[n + 1] = {0.05,0.1,0.05,0.05,0.05,0.1};
- 
-int root[n + 1][n + 1];//记录根节点
-double w[n + 2][n + 2];//子树概率总和
-double e[n + 2][n + 2];//子树期望代价
- 
-void optimalBST(double *p,double *q,int n)
-{
-	//初始化只包括虚拟键的子树
-	for (int i = 1;i <= n + 1;++i)
-	{
-		w[i][i - 1] = q[i - 1];
-		e[i][i - 1] = q[i - 1];
-	}
- 
-	//由下到上，由左到右逐步计算
-	for (int len = 1;len <= n;++len)
-	{
-		for (int i = 1;i <= n - len + 1;++i)
-		{
-			int j = i + len - 1;
-			e[i][j] = MaxVal;
-			w[i][j] = w[i][j - 1] + p[j] + q[j];
-			//求取最小代价的子树的根
-			for (int k = i;k <= j;++k)
-			{
-				double temp = e[i][k - 1] + e[k + 1][j] + w[i][j];
-				if (temp < e[i][j])
-				{
-					e[i][j] = temp;
-					root[i][j] = k;
-				}
+#include <queue>
+#include <string.h>
+#include <cstring>
+const double pi = acos(-1.0), eps = 1e-6;
+double S;
+
+struct ListNode;
+
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+class Solution {
+   public:
+    const int N = 100005;
+    ListNode *detectCycle_1(ListNode *head) {
+        ListNode *fast = head, *slow = head;
+        bool hasCycle = false;
+        while (fast && fast->next) {
+            fast = fast->next->next;
+            slow = slow->next;
+            if (fast == slow) {
+                hasCycle = true;
+                break;
+            }
+        }
+        if (!hasCycle) {
+            return nullptr;
+        }
+        ListNode *newStart = slow;  //	新的起点
+        slow = head;
+        while (newStart != slow) {
+            slow = slow->next;
+            newStart = newStart->next;
+        }
+        return slow;
+    }
+
+    ListNode *detectCycle(ListNode *head) {
+        ListNode *cur = head;
+        while (cur) {
+            if (cur->val == N) {
+                return cur;
+            }
+            cur->val = N;
+            cur = cur->next;
+        }
+        return cur;
+    }
+
+    ListNode *oddEvenList_1(ListNode *head) {
+        if (!head) {
+            return head;
+        }
+        ListNode *cur = nullptr, *headofOdd = head,
+                 *headofEven = head->next ? head->next : nullptr;
+        if (!headofEven) {
+            return head;
+        }
+        ListNode *odd = headofOdd, *even = headofEven;
+        cur = head->next->next;
+        odd->next = even->next = nullptr;
+        if (!cur) {
+            odd->next = headofEven;
+            return headofOdd;
+        }
+        int cnt = 3;
+        while (cur) {
+            std::cout << cur->val << std::endl;
+            if (cnt & 1) {
+                odd->next = cur;
+                odd = cur;
+            }  //	奇数
+            else {
+                even->next = cur;
+                even = cur;
+            }
+            cnt++;
+            cur = cur->next;
+            // 这两处记得把连接切断，否则会死循环
+            odd->next = nullptr;
+            even->next = nullptr;
+        }
+        odd->next = headofEven;
+        return headofOdd;
+    }
+
+    ListNode *oddEvenList(ListNode *head) {
+        // 如果是空的或者只有一个点，就不用翻转了
+        if (!head || !head->next) {
+            return head;
+        }
+        auto cur = head, oddHead = cur, oddTail = cur;
+        auto evenHead = cur->next, evenTail = evenHead;
+        cur = cur->next->next;
+        while (cur) {
+            oddTail->next = cur;
+            oddTail = oddTail->next;
+            cur = cur->next;
+            if (cur) {
+                evenTail->next = cur;
+                evenTail = evenTail->next;
+                // 这里要记得再跳一下next，因为这个点已经处理过了
+                cur = cur->next;
+            }
+            // 这里之所以不用把odd和even的next都置为nullptr，是因为原来的写法一次只操作奇数或者
+            // 偶数当中的一个，奇数轮需要把偶数置空，反之同理
+            // 现在每次都会操作两个，就不需要了
+        }
+        evenTail->next = nullptr;
+        oddTail->next = evenHead;
+        return oddHead;
+    }
+};
+
+const int N = 105;
+
+int n, m;	// n行m列
+
+bool g[N][N];
+
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
+int dis[N][N];
+
+int bfs(int sx, int sy) {
+	std::queue<std::pair<int, int>> q;
+	q.push({sx, sy});
+	dis[sx][sy] = 0;
+	while(q.size()) {
+		auto now_head = q.front();
+		q.pop();
+		int nx = now_head.first, ny = now_head.second;
+		if(nx == n && ny == m) {
+			return dis[nx][ny];
+		}
+		for(int i = 0;i < 4; i++) {
+			int fx = nx + dx[i], fy = ny + dy[i];
+			if(fx < 1 || fx > n || fy < 1 || fy > m) 
+				continue;
+			if(~dis[fx][fy] || g[fx][fy]) {
+				continue;
 			}
+			dis[fx][fy] = dis[nx][ny] + 1;
+			q.push({fx, fy});
 		}
 	}
 }
- 
-//输出最优二叉查找树所有子树的根
-void printRoot()
-{
-	cout << "各子树的根：" << endl;
-	for (int i = 1;i <= n;++i)
-	{
-		for (int j = 1;j <= n;++j)
-		{
-			cout << root[i][j] << " ";
+
+int main() {
+	std::string s;
+	std::cin >> s;
+	std::cout << "This is Hello World";
+	return 0;
+	memset(dis, -1, sizeof(dis));
+    std::ios::sync_with_stdio(false);
+	std::cin.tie(0);
+	std::cin >> n >> m;
+	for(int i = 1; i <=n ;i ++) {
+		for(int j = 1; j <= m; j++) {
+			std::cin >> g[i][j];
 		}
-		cout << endl;
 	}
-	cout << endl;
-}
- 
-//打印最优二叉查找树的结构
-//打印出[i,j]子树，它是根r的左子树和右子树
-void printOptimalBST(int i,int j,int r)
-{
-	int rootChild = root[i][j];//子树根节点
-	if (rootChild == root[1][n])
-	{
-		//输出整棵树的根
-		cout << "k" << rootChild << "是根" << endl;
-		printOptimalBST(i,rootChild - 1,rootChild);
-		printOptimalBST(rootChild + 1,j,rootChild);
-		return;
-	}
- 
-	if (j < i - 1)
-	{
-		return;
-	}
-	else if (j == i - 1)//遇到虚拟键
-	{
-        cout << "virtual : " << r << endl;
-        cout << "real : " << i << " " << j  << endl;
-		if (j < r)
-		{
-			cout << "d" << j << "是" << "k" << r << "的左孩子" << endl;
-		}
-		else
-			cout << "d" << j << "是" << "k" << r << "的右孩子" << endl;
-		return;
-	}
-	else//遇到内部结点
-	{
-		if (rootChild < r)
-		{
-			cout << "k" << rootChild << "是" << "k" << r << "的左孩子" << endl;
-		}
-		else
-			cout << "k" << rootChild << "是" << "k" << r << "的右孩子" << endl;
-	}
- 
-	printOptimalBST(i,rootChild - 1,rootChild);
-	printOptimalBST(rootChild + 1,j,rootChild);
-}
- 
-int main()
-{
-	optimalBST(p,q,n);
-	printRoot();
-	cout << "最优二叉树结构：" << endl;
-	printOptimalBST(1,n,-1);
+	std::cout << bfs(1, 1) << "\n";
 }
