@@ -299,3 +299,7 @@ DP求获得回文串的最小步数：
 ## 循环方式遍历二叉树
 
 可以参考这个链接：[循环遍历二叉树](https://www.cnblogs.com/smartljy/p/18694838)。
+
+## Leetcode 150. Evaluate Reverse Polish Notation
+
+每遇到一个操作符，就把栈顶部的两个数字拿出来进行运算，最后的结果就是栈顶的数字。
