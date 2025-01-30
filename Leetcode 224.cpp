@@ -67,9 +67,3 @@ class Solution {
         num.push(res);
     }
 };
-
-signed main() {
-    Solution s;
-    std::string str = "(1+(4+5+2)-3)+(6+8)";
-    std::cout << s.calculate(str) << std::endl;
-}
