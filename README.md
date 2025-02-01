@@ -334,3 +334,38 @@ DP求获得回文串的最小步数：
 
 2. 倒着来
     注意到nums1后面是空的，我们可以把1.中的过程反过来，这样就不会出现覆盖问题了。倒着来的话，特判也是可以去掉的。
+
+## Leetcode 27. 移除元素
+
+1. STL完成
+    直接用remove方法，完成移动，而且这个方法提供返回值，可以一行代码搞定
+
+2. 正着循环
+   正着循环，把等于val的值都放到最后面，这种写法需要用到while；虽然有while，但是可以通过交换环来证明，时间复杂度还是O(N)
+
+3. 倒着循环
+   这种写法只要if，不需要while
+
+上面关于是否用到while，这和三路快速排序的道理是一样的： 即当`arr[i] < pivot`时，只要if就行了；但是`arr[i] > pivot`却需要用到while。
+让我们回顾一下当时的代码：
+```C++
+class Solution
+{
+public:
+    void sortColors(std::vector<int> &nums)
+    {
+        int m = nums.size();
+        int zero_ptr = 0, two_ptr = m - 1;
+        for(int i = 0; i < m && i <= two_ptr; i++)
+        {
+            while(nums[i] == 2 && i <= two_ptr)
+                std::swap(nums[i], nums[two_ptr--]);
+            if(!nums[i])
+                std::swap(nums[i], nums[zero_ptr++]);
+        }
+    }
+};
+```
+
+2的case需要if是因为，我们可能会换一个2过来到当前的位置上，要一直换到不是2为止；
+而1的case，不可能出现2，是因为2已经被上面的case处理好了；另一方面，因为i和j是一个方向的，如果我们这一步换过来一个0，说明这个0在前面的步骤中没有被处理，但实际上我们的i肯定已经经过那个0并处理过了，这和我们`i和j一个方向`的条件相矛盾。
