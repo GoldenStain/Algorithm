@@ -60,7 +60,6 @@ public:
             int prev = nums[i], cur = i;
             do {
                 cur = (cur + k) % n;
-                std::cout << cur << " " << nums[cur] << std::endl;
                 std::swap(nums[cur], prev);
             } while(cur != i);
         }
