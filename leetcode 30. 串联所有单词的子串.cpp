@@ -1,8 +1,4 @@
-#include <iostream>
-#include <queue>
-#include <unordered_map>
-#include <vector>
-
+// wrong solution
 class Solution {
     using Umap = std::unordered_map<std::string, int>;
     using string = std::string;
@@ -79,12 +75,37 @@ class Solution {
     }
 };
 
-int main() {
-    Solution solution = Solution();
-    std::string s = "ababaab";
-    std::vector<std::string> arr = {"ab", "ba", "ba"};
-    auto ans = solution.findSubstring(s, arr);
-    for (auto ai : ans) {
-        std::cout << ai << " ";
+// true solution
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        int _count = words.size(), len = words[0].size();
+        std::vector<int> ans;
+        // 枚举滑动窗口的起点，因为滑动窗口滑动的长度是len，所以i只需要遍历不能整除len的部分.
+        for(int i = 0; i < len && i + len * _count <= s.size(); i++) {
+            int hh = i, tt = i;
+            std::unordered_map<std::string, int> differ;
+            // 初始化differ
+            for(; tt < _count * len; tt+=len)
+                differ[s.substr(tt, len)]++;
+            for (auto wi: words)
+                if (--differ[wi] == 0 )
+                    differ.erase(wi);
+            // 开始滑动
+            for(;tt + len <= s.size(); tt += len, hh += len) {
+                // 可能一开始就成功了
+                if (differ.empty())
+                    ans.push_back(hh);
+                std::string tmp = s.substr(tt, len);
+                if (++differ[tmp] == 0)
+                    differ.erase(tmp);
+                tmp = s.substr(hh, len);
+                if (--differ[tmp] == 0)
+                    differ.erase(tmp);
+            }
+            if (differ.empty())
+                ans.push_back(hh);
+        }
+        return ans;
     }
-}
+};
