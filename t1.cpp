@@ -66,11 +66,24 @@ VecInt mul(VecInt &A, int b) {
         A[i] = t % Base;
         t /= Base;
     }
+    while(A.size() > 1 && A.back() == 0)
+        A.pop_back();
     return A;
 }
 
-VecInt superMul(VecInt A, VecInt B) {
-    return A;
+VecInt superMul(VecInt &A, VecInt &B) {
+    int sa = A.size(), sb = B.size();
+    VecInt C(sa + sb, 0);
+    for(int i = 0; i < sa; i++) {
+        for(int j = 0; j < sb; j++) {
+            C[i + j] += A[i] * B[j];
+            C[i + j + 1] += C[i + j] / Base;
+            C[i + j] %= Base;
+        }
+    }
+    while(C.size() > 1 && C.back() == 0)
+        C.pop_back();
+    return C;
 }
 
 int main()
@@ -80,7 +93,7 @@ int main()
     VecInt A;
     std::cin >> a >> b;
     Input(A, a);
-    if (b.size() < 6)
+    if (b.size() <= 5)
         num_b = new int (std::stoi(b));
     // super
     if (!num_b) {
