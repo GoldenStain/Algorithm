@@ -27,3 +27,26 @@ class Solution {
             return ans;
         }
     };
+
+// solution 2
+class Solution {
+    public:
+        vector<string> summaryRanges(vector<int>& nums) {
+            int n = nums.size();
+            vector<string> ans;
+            for(int i = 0; i < n; i++) {
+                int j = i + 1;
+                while(j < n && nums[j] == 1 + nums[j - 1]) 
+                    j++;
+                j--;
+                std::string res = to_string(nums[i]);
+                if (i < j) {
+                    res += "->";
+                    res += to_string(nums[j]);
+                }
+                ans.push_back(res);
+                i = j;
+            }
+            return ans;
+        }
+    };
