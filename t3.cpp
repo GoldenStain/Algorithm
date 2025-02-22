@@ -68,18 +68,7 @@ class Solution {
 };
 
 int main() {
-    std::vector<std::string> words = {"What",           "must",  "be",
-                                      "acknowledgment", "shall", "be"};
-    std::cout << "intpus: ";
-    for (auto ai : words) {
-        std::cout << ai << ",";
-    }
-    std::cout << std::endl;
-    int maxWidth = 16;
-    Solution solution;
-    auto ans = solution.fullJustify(words, maxWidth);
-    for (auto ai : ans) {
-        std::cout << ai << ",";
-    }
+    int q = -5 / 3, r = -5 % 3;
+    std::cout << q << " " << r << std::endl;
     return 0;
 }
