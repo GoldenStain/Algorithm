@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <stack>
+#include <cmath>
 
 class MinStack {
    public:
@@ -33,3 +34,8 @@ class MinStack {
  * int param_3 = obj->top();
  * int param_4 = obj->getMin();
  */
+
+int main() {
+    int x = 20000;
+    std::cout << std::log2(x) << std::endl;
+}
