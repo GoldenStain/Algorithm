@@ -57,3 +57,39 @@ class Solution {
     };
 
 // 正解BFS
+/**
+ * Definition for a binary tree
+  node.
+
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    public:
+        bool hasPathSum(TreeNode* root, int targetSum) {
+            if (!root)
+                return false;
+            using PTI = std::pair<TreeNode*, int>;
+            std::queue<PTI> q;
+            q.push({root, root->val});
+            bool ans = false;
+            while(q.size()) {
+                auto t = q.front();
+                q.pop();
+                auto rt = t.first; int num = t.second;
+                if (!rt->left && !rt->right)
+                     ans |= num == targetSum;
+                if (rt->left)
+                    q.push({rt->left, num + rt->left->val});
+                if (rt->right)
+                    q.push({rt->right, num + rt->right->val});
+            }
+            return ans;
+        }
+    };
