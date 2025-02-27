@@ -36,24 +36,20 @@ vector<int> div(vector<int> &A, vector<int> &B) {
 }
 
 int main() {
-    string a;
-    vector<int> A;
-    string b;
-    vector<int> B;
-
-    cin >> a >> b;
-
-    for (int i = a.size() - 1; i >= 0; i--) A.push_back(a[i] - '0');
-    for (int i = b.size() - 1; i >= 0; i--) B.push_back(b[i] - '0');
-
-    vector<int> C = div(A, B);
-
-    for (int i = C.size() - 1; i >= 0; i--) cout << C[i];
-
-    cout << endl;
-
-    while (A.size() > 1 && A.back() == 0) A.pop_back();
-    for (int i = A.size() - 1; i >= 0; i--) cout << A[i];
-
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::string a, b;
+    std::cin >> a >> b;
+    int sa = a.size(), sb = b.size();
+    std::vector<std::vector<int>> f(sa, std::vector<int>(sb, 0));
+    int ans = 0;
+    for(int i = 0; i < sa; i++)
+        f[i][0] = b[0] == a[i], ans = std::max(ans, f[i][0]);
+    for(int i = 0; i < sb; i++)
+        f[0][i] = a[0] == b[i], ans = std::max(ans, f[0][i]);
+    for(int i = 1; i < sa; i++)
+        for(int j = 1; j < sb; j++)
+            f[i][j] = (a[i] == b[j])?f[i - 1][j - 1] + 1:0, ans = std::max(ans, f[i][j]);
+    std::cout << ans << std::endl;
     return 0;
 }
