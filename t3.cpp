@@ -68,8 +68,21 @@ class Solution {
     }
 };
 
+int n, P = 10000;
+int t[10000], b[10000], s[10000];
+
 int main() {
-    int q = -5 / 3, r = -5 % 3;
-    std::cout << q << " " << r << std::endl;
+    n=read();
+    int ans = 0;
+	for(int i=1;i<=n;i++) t[read()]++;
+	for(int i=1;i<=P;i++) if(t[i])
+	{
+		for(int j=i*2;j<=P;j+=i) if(t[j])
+			b[i]+=t[j],s[j]+=t[i];
+		b[i]+=t[i]-1,s[i]+=t[i]-1;
+		ans+=t[i]*b[i];
+        std::cout << "I: " << i << " " << b[i] << " " << s[i] << std::endl;
+	}
+    std::cout << ans << std::endl;
     return 0;
 }
