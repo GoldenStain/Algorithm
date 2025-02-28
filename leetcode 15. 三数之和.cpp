@@ -67,4 +67,30 @@ class Solution {
         }
     };
 
-// 双指针for写法，比while写法快一些
+// 双指针for写法
+class Solution {
+    public:
+        vector<vector<int>> threeSum(vector<int>& nums) {
+            int n = nums.size();
+            sort(nums.begin(), nums.end());
+            vector<vector<int>> ans;
+            for(int i = 0; i <= n-3; i++) {
+                if (i && nums[i] == nums[i - 1])
+                    continue;
+                int k = n - 1;
+                int t = -nums[i];
+                for(int j = i + 1; j < k; j++) {
+                    if (j > i +1 && nums[j] == nums[j - 1])
+                        continue;
+                    // 因为每次循环结束，j都会移动，所以我们不能让k一步一步地走，要让他快速到达合法的位置。
+                    while(j < k && nums[k] + nums[j] > t)
+                        k--;
+                    if (j >= k)
+                        break;
+                    if (nums[k] + nums[j] == t)
+                        ans.push_back({nums[i], nums[j], nums[k]});
+                }
+            }
+            return ans;
+        }
+    };
