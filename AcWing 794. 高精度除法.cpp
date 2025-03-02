@@ -18,7 +18,7 @@ vector<int> div(vector<int> &A, int b, int &r)
         C.push_back(r / b);
         r %= b;
     }
-    if (C.size() >= 2 && C.back() >= 5)
+    if (d && C.size() >= 2 && C.back() >= 5)
         C[C.size() - 2] += 1, C.pop_back();
     // C: 高->低
     reverse(C.begin(), C.end());
