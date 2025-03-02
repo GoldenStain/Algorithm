@@ -1036,3 +1036,11 @@ https://www.cnblogs.com/smartljy/p/18392436
 ## Leetcode 3. 无重复字符的最长子串
 
 这道题的输入范围很确定，可以不用map，直接用一个数组，会更快一些。
+
+滑动窗口用法总结：
+
+https://www.cnblogs.com/smartljy/p/18746626
+
+## Leetcode 76. 最小覆盖子串
+
+做这道题的时候在水群，没认真审题，写错了好几遍。
