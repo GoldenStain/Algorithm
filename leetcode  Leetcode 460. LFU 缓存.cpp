@@ -1,39 +1,4 @@
-#include <stdio.h>
-#include <set>
-#include <unordered_map>
-#include <algorithm>
-#include <cmath>
-#include <iostream>
-#include <string>
-
-#define For(i, j, n) for (int i = j; i <= n; ++i)
-#ifdef DEBUG
-#define DEBUG_LOG(fmt, ...)                  \
-    do {                                     \
-        fprintf(stderr, fmt, ##__VA_ARGS__); \
-    } while (0);
-#else
-#define DEBUG_LOG(fmt, ...) \
-    do {                    \
-    } while (0);
-#endif
-
-template <typename T>
-inline T read() {
-    T x = 0;
-    int f = 1;
-    char ch = getchar();
-    while (ch < '0' || ch > '9') {
-        if (ch == '-') f = -1;
-        ch = getchar();
-    }
-    while (ch >= '0' && ch <= '9') {
-        x = x * 10 + ch - '0';
-        ch = getchar();
-    }
-    return x * f;
-}
-
+// set solution
 struct Node {
     int key, value, time,
         freq;  // time表示最后一次使用的时间戳，用来对应"recently".
@@ -101,5 +66,3 @@ class LFUCache {
  * int param_1 = obj->get(key);
  * obj->put(key,value);
  */
-
-int main() { return 0; }
