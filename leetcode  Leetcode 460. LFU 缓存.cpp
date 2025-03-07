@@ -131,6 +131,7 @@ class LFUCache {
 
    private:
     // 这里的key_table键值要选择迭代器而不是Node本身，是因为我们没法通过Node本身去高效地访问一个std::list，就像我们手写的链表要用指针去访问一样，std::list要高效访问，就需要用到迭代器。
+    // 这道题链表本体都在freq_table的second里边，而且我们没有去显式地分配内存，靠的是map在第一次遇到新索引时，调用默认构造函数的行为来新建链表，key_table负责索引到每一个具体的节点。
     std::unordered_map<int, std::list<Node>::iterator> key_table;
     std::unordered_map<int, std::list<Node>> freq_table;
     int _capacity, min_freq = 0;
