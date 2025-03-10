@@ -33,48 +33,19 @@ inline T read() {
     return x * f;
 }
 
-// Definition for a Node.
-class Node {
-   public:
+struct TreeNode {
     int val;
-    Node* left;
-    Node* right;
-    Node* next;
-
-    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
-
-    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
-
-    Node(int _val, Node* _left, Node* _right, Node* _next)
-        : val(_val), left(_left), right(_right), next(_next) {}
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right)
+        : val(x), left(left), right(right) {}
 };
 
 class Solution {
    public:
-    Node* connect(Node* root) {
-        if (!root) return root;
-        // next_start表示下一层要从哪里开始，也就是下一层最左边的节点。
-        Node* start = root;
-        while (start) {
-            Node* cur = start;
-            Node *prev = NULL, *next_start = NULL;
-            while (cur) {
-                if (cur->left) {
-                    if (prev) prev->next = cur->left;
-                    prev = cur->left;
-                    if (!next_start) next_start = cur->left;
-                }
-                if (cur->right) {
-                    if (prev) prev->next = cur->right;
-                    prev = cur->right;
-                    if (!next_start) next_start = cur->right;
-                }
-                cur = cur->next;
-            }
-            start = next_start;
-        }
-        return root;
-    }
+    void flatten(TreeNode *root) {}
 };
 
 int main() { return 0; }
