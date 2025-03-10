@@ -27,6 +27,7 @@ class Solution {
                 TreeNode* p = next;
                 while (p->right) p = p->right;
                 if (p) p->right = cur->right;
+                // 同样要记得断开左边的链接
                 cur->left = nullptr;
                 cur->right = next;
             }
