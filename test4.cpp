@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <unordered_map>
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -35,17 +35,33 @@ inline T read() {
 
 struct TreeNode {
     int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right)
-        : val(x), left(left), right(right) {}
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
 class Solution {
-   public:
-    void flatten(TreeNode *root) {}
-};
+    public:
+        std::unordered_map<int, int> depth;
+        std::unordered_map<int, TreeNode*> fa;
+        TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+            dfs(root, 1, nullptr);
+            if (depth[p->val] < depth[q->val])
+                std::swap(p, q);
+            while(depth[p->val] > depth[q->val])
+                p = fa[p->val];
+            if (p == q)
+                return q;
+            while(fa[p->val] != fa[q->val])
+                p = fa[p->val], q = fa[q->val];
+            return fa[p->val];
+        }
+        void dfs(TreeNode* root, int d, TreeNode* f) {
+            depth[root->val] = d;
+            fa[root->val] = f;
+            dfs(root->left, d + 1, root);
+            dfs(root->right, d + 1, root);
+        }
+    };
 
 int main() { return 0; }
