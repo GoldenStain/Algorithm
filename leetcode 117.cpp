@@ -1,41 +1,8 @@
-#include <stdio.h>
-
-#include <algorithm>
-#include <cmath>
-#include <iostream>
-#include <string>
-
-#define For(i, j, n) for (int i = j; i <= n; ++i)
-#ifdef DEBUG
-#define DEBUG_LOG(fmt, ...)                  \
-    do {                                     \
-        fprintf(stderr, fmt, ##__VA_ARGS__); \
-    } while (0);
-#else
-#define DEBUG_LOG(fmt, ...) \
-    do {                    \
-    } while (0);
-#endif
-
-template <typename T>
-inline T read() {
-    T x = 0;
-    int f = 1;
-    char ch = getchar();
-    while (ch < '0' || ch > '9') {
-        if (ch == '-') f = -1;
-        ch = getchar();
-    }
-    while (ch >= '0' && ch <= '9') {
-        x = x * 10 + ch - '0';
-        ch = getchar();
-    }
-    return x * f;
-}
-
+// O(n) BFS
+/*
 // Definition for a Node.
 class Node {
-   public:
+public:
     int val;
     Node* left;
     Node* right;
@@ -48,6 +15,54 @@ class Node {
     Node(int _val, Node* _left, Node* _right, Node* _next)
         : val(_val), left(_left), right(_right), next(_next) {}
 };
+*/
+
+class Solution {
+   public:
+    Node* connect(Node* root) {
+        if (!root) return root;
+        std::queue<Node*> q;
+        q.push(root);
+        while (q.size()) {
+            int n = q.size();
+            Node* prev = NULL;
+            for (int i = 1; i <= n; i++) {
+                Node* now = q.front();
+                q.pop();
+                if (i > 1) prev->next = now;
+                if (now->left) q.push(now->left);
+                if (now->right) q.push(now->right);
+                prev = now;
+            }
+        }
+        return root;
+    }
+};
+
+// DFS
+class Solution {
+   public:
+    Node* connect(Node* root) {
+        if (!root) return root;
+        dfs(root, 0);
+        return root;
+    }
+
+   private:
+    std::vector<Node*> arr;
+    void dfs(Node* node, int depth) {
+        if (depth == arr.size())
+            arr.push_back(node);
+        else {
+            arr[depth]->next = node;
+            arr[depth] = node;
+        }
+        if (node->left) dfs(node->left, depth + 1);
+        if (node->right) dfs(node->right, depth + 1);
+    }
+};
+
+// 压缩空间BFS
 
 class Solution {
    public:
@@ -57,6 +72,7 @@ class Solution {
         Node* start = root;
         while (start) {
             Node* cur = start;
+            // 这两个变量是以层为单位的，每一层都要重置。
             Node *prev = NULL, *next_start = NULL;
             while (cur) {
                 if (cur->left) {
@@ -76,5 +92,3 @@ class Solution {
         return root;
     }
 };
-
-int main() { return 0; }
