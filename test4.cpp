@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include <vector>
+
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #define For(i, j, n) for (int i = j; i <= n; ++i)
 #ifdef DEBUG
@@ -35,24 +36,33 @@ inline T read() {
 
 class Solution {
    public:
-    std::vector<int> row, col, diag1, diag2;
+    std::vector<bool> col, diag1, diag2, row;
     int ans = 0;
     int totalNQueens(int n) {
-        row.resize(n);
-        col.resize(n);
-        diag1.resize(n);
-        diag2.resize(n);
-        dfs(0, 0, n);
+        col.assign(n + 1, false);
+        diag1.assign(2 * n, false);
+        diag2.assign(2 * n, false);
+        row.assign(n + 1, false);
+        dfs(0, 0, n, 0);
+        return ans;
     }
-    void dfs(int rn, int cnt, int n) {
-        if (rn == n) {
-            return;
-        }
+    void dfs(int x, int y, int n, int cnt) {
         if (cnt == n) {
             ans++;
             return;
         }
-        // 枚举放在哪一列
+        if (y == n) dfs(x + 1, 0, n, cnt);
+        if (x == n) {
+            return;
+        }
+        // 不放
+        dfs(x, y + 1, n, cnt);
+        // 放
+        if (!row[x] && !col[y] && !diag1[x + y] && !diag2[x - y + n]) {
+            row[x] = col[y] = diag1[x + y] = diag2[x - y + n] = true;
+            dfs(x, y + 1, n, cnt + 1);
+            row[x] = col[y] = diag1[x + y] = diag2[x - y + n] = false;
+        }
     }
 };
 
