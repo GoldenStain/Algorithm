@@ -1463,3 +1463,7 @@ push_back同理
 ## Leetcode 70. 爬楼梯
 
 这道题打裸的递归会超时，需要记忆化一下，这种情况下，就完全等价于DP了。
+
+## Leetcode 198. 打家劫舍
+
+状态机板子题，这里用列表初始化出了点问题，总结了一下：https://www.cnblogs.com/smartljy/p/18770275
