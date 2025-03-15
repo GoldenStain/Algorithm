@@ -1,9 +1,10 @@
 #include <iostream>
 #include <stdio.h>
 #include <algorithm>
-#include <vector>
 #include <string>
 #include <cmath>
+#include <vector>
+#include <limits>
 
 #define For(i, j, n) for(int i = j ; i <= n ; ++i)
 #ifdef DEBUG
@@ -36,9 +37,26 @@ inline T read()
     return x * f;
 }
 
+int get_length(long long num) {
+    double log_val = std::log2(static_cast<double>(num));
+    int length = static_cast<int>(std::floor(log_val));
+    return length;
+}
+
 int main()
 {
-    std::vector<std::vector<int>> dp(5, std::vector<int>(2, 0));
-    std::cout << dp[0][0] << " " << dp[0][1] << std::endl;
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    long long l, r;
+    std::cin >> l >> r;
+    if (l == r) {
+        std::cout << "0\n";
+        return 0;
+    }
+    long long p = (1ll << 62);
+    while(p&&(l&p)==(r&p))
+        p>>=1;
+    p = (p<<1)-1;
+    std::cout << p << std::endl;
     return 0;
 }
