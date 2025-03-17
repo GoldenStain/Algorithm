@@ -10,7 +10,9 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:/mingw64/bin/g++.exe"
+            "compilerPath": "C:/mingw64/bin/g++.exe",
+            "cppStandard": "c++20",
+            "cStandard": "c99"
         }
     ],
     "version": 4
