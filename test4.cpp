@@ -38,20 +38,36 @@ using std::cin, std::cout;
 using std::vector;
 class Solution {
    public:
-    int largestRectangleArea(vector<int>& heights) {
-        vector<int> stk;
-        int ans = 0, n = heights.size();
-        vector<int> left(n, -1), right(n, n); // -1和n对应边界情况
-        for (int i = 0; i < n; i++) {
-            while(stk.size() && heights[i] < heights[stk.back()]) {
-                right[stk.back()] = i;
-                stk.pop_back();
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int m = matrix.size(), n = matrix[0].size();
+        vector<vector<int>> ones(m, vector<int>(n, 0));
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '1') {
+                    ones[i][j] = (j==0?0:ones[i][j - 1]) + 1;
+                }
             }
-            if (stk.size()) left[i] = stk.back();
-            stk.push_back(i);
+        }// 预处理完毕
+        std::vector<int> stk, up, down;
+        int ans = 0;
+        for (int j = 0; j < n; j++) {
+            stk.clear();
+            up.assign(m, -1);
+            down.assign(m, m);
+            for (int i = 0; i < m; i++) {
+                while (stk.size() && ones[i][j] < ones[stk.back()][j]) {
+                    down[stk.back()] = i;
+                    stk.pop_back();
+                }
+                if (stk.size())
+                    up[i] = stk.back();
+                stk.push_back(i);
+            }
+            for (int i = 0; i < m; i++) {
+                int width = down[i] - up[i] - 1;
+                ans = std::max(ans, width * ones[i][j]);
+            }
         }
-        for (int i = 0; i < n; i++)
-            ans = std::max(ans, (right[i] - left[i] - 1) * heights[i]);
         return ans;
     }
 };
