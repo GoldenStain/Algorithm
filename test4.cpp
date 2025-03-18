@@ -34,21 +34,37 @@ inline T read() {
     return x * f;
 }
 
+using std::string;
 using std::vector;
 
 class Solution {
    public:
-    int coinChange(vector<int>& coins, int amount) {
-        int n = coins.size();
-        vector<int> dp(amount + 1, 1e5);
-        dp[0] = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = coins[i]; j <= amount; j++) {
-                dp[j] = std::min(dp[j - coins[i]] + 1, dp[j]);
-            }
+    vector<string> generateParenthesis(int n) {
+        vector<string> ans;
+        string cur;
+        dfs(ans, cur, 0, 0, n);
+        return ans;
+    }
+    void dfs(vector<string>& ans, string cur, int left, int right, int n) {
+        if (cur.size() == 2 * n) {
+            ans.emplace_back(cur);
+            return;
         }
-        return dp[amount]==1e5?-1:dp[amount];
+        if (left < n) {
+            cur.append(1, '(');
+            dfs(ans, cur, left + 1, right, n);
+            cur.pop_back();
+        }
+        if (right < left) {
+            cur.append(1, ')');
+            dfs(ans, cur, left, right + 1, n);
+            cur.pop_back();
+        }
     }
 };
 
-int main() { return 0; }
+int main() {
+    string s;
+    std::cout << s.size() << std::endl;
+    return 0;
+}
