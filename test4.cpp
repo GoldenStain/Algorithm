@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <memory>
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -36,30 +36,37 @@ inline T read() {
 
 using std::string;
 using std::vector;
+using std::shared_ptr;
 
 class Solution {
+    vector<shared_ptr<vector<string>>> dp;
    public:
     vector<string> generateParenthesis(int n) {
         vector<string> ans;
         string cur;
-        dfs(ans, cur, 0, 0, n);
-        return ans;
+        dp.assign(n, nullptr);
+        return *dfs(n);
     }
-    void dfs(vector<string>& ans, string cur, int left, int right, int n) {
-        if (cur.size() == 2 * n) {
-            ans.emplace_back(cur);
-            return;
+    
+    shared_ptr<vector<string>> dfs(int n) {
+        if (dp[n]) 
+            return dp[n];
+        auto res = std::make_shared<vector<string>>();
+        if (n == 0) {
+            res->emplace_back("");
+            dp[0] = res;
+            return res;
         }
-        if (left < n) {
-            cur.append(1, '(');
-            dfs(ans, cur, left + 1, right, n);
-            cur.pop_back();
+        for (int i = 0; i < n; i++) {
+            auto left = dfs(i), right = dfs(n - i - 1);
+            for (auto &li: *left) { // 因为是指针，要记得解引用
+                for (auto &ri: *right) {
+                    res->emplace_back("(" + li + ")" + ri);
+                }
+            }
         }
-        if (right < left) {
-            cur.append(1, ')');
-            dfs(ans, cur, left, right + 1, n);
-            cur.pop_back();
-        }
+        dp[n] = res;
+        return res;
     }
 };
 
