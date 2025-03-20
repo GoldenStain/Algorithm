@@ -52,28 +52,40 @@ using std::string;
 using std::vector;
 
 class Solution {
-    int ans = INT_MIN;
-
    public:
-    int maxPathSum(TreeNode *root) {
-        dfs(root);
-        return ans;
+    int countNodes(TreeNode *root) {
+        if (!root)
+            return 0;
+        int depth = cnt(root) - 1; // 从0开始
+        int l = (1 << depth), r = (1 << (depth + 1)) - 1;
+        while (l < r) {
+            int mid = (l + r + 1) >> 1;
+            if (check(mid, root)) {
+                l = mid;
+            }
+            else 
+                r = mid - 1;
+        }
+        return l;
     }
-    int dfs(TreeNode* root) {
-        if (!root) {
-            return INT_MIN;
+    int cnt(TreeNode *root) {
+        if (!root) 
+            return 0;
+        return 1 + cnt(root->left);
+    }
+    bool check(int x, TreeNode* root) {
+        TreeNode* cur = root;
+        int bit = 2;
+        while (x) {
+            if (!cur)
+                return false;
+            int now_bit = (x >> bit) & 1;
+            if (now_bit)
+                cur = cur->right;
+            else
+                cur = cur->left;
         }
-        ans = std::max(ans, root->val);// 至少要包含一个节点
-        if (!root->left && !root->right) {
-            return root->val;
-        }
-        int l_max = 0, r_max = 0;
-        r_max = dfs(root->right);
-        l_max = dfs(root->left);
-        ans = std::max(ans, r_max);
-        ans = std::max(ans, l_max);
-        ans = std::max(ans, r_max + root->val + l_max);
-        return std::max(l_max, r_max) + root->val;
+        return cur != nullptr;
     }
 };
 
