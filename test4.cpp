@@ -1,8 +1,9 @@
 #include <stdio.h>
-#include <memory>
+#include <queue>
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -34,39 +35,46 @@ inline T read() {
     return x * f;
 }
 
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right)
+        : val(x), left(left), right(right) {}
+};
+
+using std::shared_ptr;
 using std::string;
 using std::vector;
-using std::shared_ptr;
+using std::queue;
 
 class Solution {
-    vector<shared_ptr<vector<string>>> dp;
+    typedef long long ll;
+
    public:
-    vector<string> generateParenthesis(int n) {
-        vector<string> ans;
-        string cur;
-        dp.assign(n, nullptr);
-        return *dfs(n);
-    }
-    
-    shared_ptr<vector<string>> dfs(int n) {
-        if (dp[n]) 
-            return dp[n];
-        auto res = std::make_shared<vector<string>>();
-        if (n == 0) {
-            res->emplace_back("");
-            dp[0] = res;
-            return res;
-        }
-        for (int i = 0; i < n; i++) {
-            auto left = dfs(i), right = dfs(n - i - 1);
-            for (auto &li: *left) { // 因为是指针，要记得解引用
-                for (auto &ri: *right) {
-                    res->emplace_back("(" + li + ")" + ri);
-                }
+    int sumNumbers(TreeNode *root) {
+        queue<std::pair<TreeNode*, ll>> q;
+        q.push({root, root->val});
+        ll ans = 0ll;
+        while(q.size()) {
+            auto tmp = q.front();
+            q.pop();
+            auto f = tmp.first; 
+            auto s = tmp.second;
+            if (!f->left && !f->right) {
+                ans += s;
+            }
+            else {
+                TreeNode* l = f->left, *r = f->right;
+                if (l)
+                    q.push({l, s*10 + l->val});
+                if (r)
+                    q.push({r, s*10 + r->val});
             }
         }
-        dp[n] = res;
-        return res;
+        return ans;
     }
 };
 
