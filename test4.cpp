@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include <queue>
+
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <memory>
+#include <queue>
 #include <string>
 #include <vector>
 
@@ -45,36 +46,34 @@ struct TreeNode {
         : val(x), left(left), right(right) {}
 };
 
+using std::queue;
 using std::shared_ptr;
 using std::string;
 using std::vector;
-using std::queue;
 
 class Solution {
-    typedef long long ll;
+    int ans = INT_MIN;
 
    public:
-    int sumNumbers(TreeNode *root) {
-        queue<std::pair<TreeNode*, ll>> q;
-        q.push({root, root->val});
-        ll ans = 0ll;
-        while(q.size()) {
-            auto tmp = q.front();
-            q.pop();
-            auto f = tmp.first; 
-            auto s = tmp.second;
-            if (!f->left && !f->right) {
-                ans += s;
-            }
-            else {
-                TreeNode* l = f->left, *r = f->right;
-                if (l)
-                    q.push({l, s*10 + l->val});
-                if (r)
-                    q.push({r, s*10 + r->val});
-            }
-        }
+    int maxPathSum(TreeNode *root) {
+        dfs(root);
         return ans;
+    }
+    int dfs(TreeNode* root) {
+        if (!root) {
+            return INT_MIN;
+        }
+        ans = std::max(ans, root->val);// 至少要包含一个节点
+        if (!root->left && !root->right) {
+            return root->val;
+        }
+        int l_max = 0, r_max = 0;
+        r_max = dfs(root->right);
+        l_max = dfs(root->left);
+        ans = std::max(ans, r_max);
+        ans = std::max(ans, l_max);
+        ans = std::max(ans, r_max + root->val + l_max);
+        return std::max(l_max, r_max) + root->val;
     }
 };
 
