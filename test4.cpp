@@ -53,39 +53,40 @@ using std::vector;
 
 class Solution {
    public:
-    int countNodes(TreeNode *root) {
-        if (!root)
-            return 0;
-        int depth = cnt(root) - 1; // 从0开始
-        int l = (1 << depth), r = (1 << (depth + 1)) - 1;
-        while (l < r) {
-            int mid = (l + r + 1) >> 1;
-            if (check(mid, root)) {
-                l = mid;
+    int dx[4] = {-1, 1, 0, 0}, dy[4] = {0, 0, -1, 1};
+    int m, n;
+    bool exist(vector<vector<char>> &board, string word) {
+        int len = word.size();
+        m = board.size();
+        n = board[0].size();
+        vector<vector<bool>> vis(m, vector<bool>(n, false));
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dfs(board, i, j, 0, word, vis)) return true;
             }
-            else 
-                r = mid - 1;
         }
-        return l;
+        return false;
     }
-    int cnt(TreeNode *root) {
-        if (!root) 
-            return 0;
-        return 1 + cnt(root->left);
-    }
-    bool check(int x, TreeNode* root) {
-        TreeNode* cur = root;
-        int bit = 2;
-        while (x) {
-            if (!cur)
-                return false;
-            int now_bit = (x >> bit) & 1;
-            if (now_bit)
-                cur = cur->right;
-            else
-                cur = cur->left;
+    bool dfs(vector<vector<char>> &board, int sx, int sy, int cnt,
+             string &target, vector<vector<bool>> &vis) {
+        if (cnt == target.size() - 1) {
+            return board[sx][sy] == target[cnt];
         }
-        return cur != nullptr;
+        if (board[sx][sy] != target[cnt]) {
+            return false;
+        }
+        vis[sx][sy] = true;
+        for (int i = 0; i < 4; i++) {
+            int nx = sx + dx[i], ny = sy + dy[i];
+            if (nx < 0 || nx >= m || ny < 0 || ny >= n || vis[nx][ny]) continue;
+            bool flag = dfs(board, nx, ny, cnt + 1, target, vis);
+            if (flag) {
+                vis[sx][sy]=false;
+                return true;
+            }
+        }
+        vis[sx][sy] = false;
+        return false;
     }
 };
 
