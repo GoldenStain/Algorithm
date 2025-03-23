@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include <algorithm>
 #include <cmath>
@@ -55,6 +56,7 @@ class Solution {
    public:
     int dx[4] = {-1, 1, 0, 0}, dy[4] = {0, 0, -1, 1};
     int m, n;
+    bool able[15][15][15] = {0};  // 0表示有可能可以，1表示已经试过不可以
     bool exist(vector<vector<char>> &board, string word) {
         int len = word.size();
         m = board.size();
@@ -75,16 +77,19 @@ class Solution {
         if (board[sx][sy] != target[cnt]) {
             return false;
         }
+        if (able[sx][sy][cnt])
+            return false;
         vis[sx][sy] = true;
         for (int i = 0; i < 4; i++) {
             int nx = sx + dx[i], ny = sy + dy[i];
             if (nx < 0 || nx >= m || ny < 0 || ny >= n || vis[nx][ny]) continue;
             bool flag = dfs(board, nx, ny, cnt + 1, target, vis);
             if (flag) {
-                vis[sx][sy]=false;
+                vis[sx][sy] = false;
                 return true;
             }
         }
+        able[sx][sy][cnt] = true;
         vis[sx][sy] = false;
         return false;
     }
