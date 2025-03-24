@@ -54,23 +54,19 @@ using std::vector;
 
 class Solution {
    public:
-    int lengthOfLIS(vector<int> &nums) {
-        if (nums.size() == 1) {
-            return 1;
-        }
-        int n = nums.size();
-        vector<int> ups;
-        ups.push_back(nums[0]);
-        for (int i = 1; i < n; i++) {
-            if (nums[i] > ups.back()) {
-                ups.emplace_back(nums[i]);
-            } else {
-                auto pos = std::lower_bound(ups.begin(), ups.end(), nums[i]);
-                std::cout << pos - ups.begin();
-                *pos = nums[i];
+    int minimumTotal(vector<vector<int>> &triangle) {
+        int n = triangle.size();
+        vector<vector<int>> f(2, vector<int>(n, 100000000));
+        int idx;
+        // 设置边界条件
+        for (int i = 0; i < n; i++) f[(n - 1) & 1][i] = triangle[n - 1][i];
+        for (int i = n - 2; i >= 0; i--) {
+            idx = i & 1;
+            for (int j = 0; j <= i; j++) {
+                f[idx][j] = std::min(f[idx ^ 1][j] + triangle[i][j], f[idx ^ 1][j + 1] + triangle[i][j]);
             }
         }
-        return ups.size();
+        return f[idx][0];
     }
 };
 
