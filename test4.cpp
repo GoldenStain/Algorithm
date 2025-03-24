@@ -54,44 +54,23 @@ using std::vector;
 
 class Solution {
    public:
-    int dx[4] = {-1, 1, 0, 0}, dy[4] = {0, 0, -1, 1};
-    int m, n;
-    bool able[15][15][15] = {0};  // 0表示有可能可以，1表示已经试过不可以
-    bool exist(vector<vector<char>> &board, string word) {
-        int len = word.size();
-        m = board.size();
-        n = board[0].size();
-        vector<vector<bool>> vis(m, vector<bool>(n, false));
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (dfs(board, i, j, 0, word, vis)) return true;
+    int lengthOfLIS(vector<int> &nums) {
+        if (nums.size() == 1) {
+            return 1;
+        }
+        int n = nums.size();
+        vector<int> ups;
+        ups.push_back(nums[0]);
+        for (int i = 1; i < n; i++) {
+            if (nums[i] > ups.back()) {
+                ups.emplace_back(nums[i]);
+            } else {
+                auto pos = std::lower_bound(ups.begin(), ups.end(), nums[i]);
+                std::cout << pos - ups.begin();
+                *pos = nums[i];
             }
         }
-        return false;
-    }
-    bool dfs(vector<vector<char>> &board, int sx, int sy, int cnt,
-             string &target, vector<vector<bool>> &vis) {
-        if (cnt == target.size() - 1) {
-            return board[sx][sy] == target[cnt];
-        }
-        if (board[sx][sy] != target[cnt]) {
-            return false;
-        }
-        if (able[sx][sy][cnt])
-            return false;
-        vis[sx][sy] = true;
-        for (int i = 0; i < 4; i++) {
-            int nx = sx + dx[i], ny = sy + dy[i];
-            if (nx < 0 || nx >= m || ny < 0 || ny >= n || vis[nx][ny]) continue;
-            bool flag = dfs(board, nx, ny, cnt + 1, target, vis);
-            if (flag) {
-                vis[sx][sy] = false;
-                return true;
-            }
-        }
-        able[sx][sy][cnt] = true;
-        vis[sx][sy] = false;
-        return false;
+        return ups.size();
     }
 };
 
