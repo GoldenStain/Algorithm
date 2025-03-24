@@ -65,8 +65,6 @@ class Solution {
             TreeNode *head = q.front();
             int n = q.size();
             ans.push_back(0.f);
-            if (head->left) q.push(head->left);
-            if (head->right) q.push(head->right);
             for (int i = 1; i <= n; i++) {
                 head = q.front();
                 q.pop();
