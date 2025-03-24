@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -53,24 +54,29 @@ using std::vector;
 
 class Solution {
    public:
-    vector<int> rightSideView(TreeNode *root) {
+    vector<double> averageOfLevels(TreeNode *root) {
         if (!root) {
-            return vector<int>{};
+            return vector<double>{};
         }
-        vector<int> ans;
-        dfs(root, 0, ans);
+        queue<TreeNode *> q;
+        vector<double> ans;
+        q.push(root);
+        while (q.size()) {
+            TreeNode *head = q.front();
+            int n = q.size();
+            ans.push_back(0.f);
+            if (head->left) q.push(head->left);
+            if (head->right) q.push(head->right);
+            for (int i = 1; i <= n; i++) {
+                head = q.front();
+                q.pop();
+                ans.back() += head->val;
+                if (head->left) q.push(head->left);
+                if (head->right) q.push(head->right);
+            }
+            ans.back() /= n;
+        }
         return ans;
-    }
-    void dfs(TreeNode* root, int depth, vector<int>& ans) {
-        if (!root)
-            return ;
-        if (depth == ans.size()) {
-            ans.push_back(root->val);
-        }
-        if (root->right)
-            dfs(root->right, depth + 1, ans);
-        if (root->left)
-            dfs(root->left, depth + 1, ans);
     }
 };
 
