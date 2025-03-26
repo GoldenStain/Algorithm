@@ -54,32 +54,33 @@ using std::vector;
 
 class Solution {
    public:
-    vector<double> averageOfLevels(TreeNode *root) {
-        if (!root) {
-            return vector<double>{};
+    int minCut(string s) {
+        int n = s.size();
+        if (n == 1) {
+            return 0;
         }
-        vector<double> ans;
-        vector<int> size;
-        dfs(root, 1, ans, size);
-        for (int i = 0; i < ans.size(); i++)
-            ans[i]/=(double)size[i];
-        return ans;
-    }
-    void dfs(TreeNode* root, int depth, vector<double>& ans, vector<int>& size) {
-        if (!root) {
-            return;
+        vector<vector<bool>> g(n, vector<bool>(n, false));
+        for (int i = 0; i < n; i++) g[i][i] = true;
+        for (int len = 2; len < n; len++) {
+            for (int i = 0; i + len <= n; i++) {
+                int j = i + len - 1;
+                if (i + 1 > j - 1)
+                    g[i][j] = (s[i] == s[j]);
+                else
+                    g[i][j] = g[i + 1][j - 1] & (s[i] == s[j]);
+            }
         }
-        if (ans.size() < depth) {
-            ans.emplace_back((double)root->val);
-            size.emplace_back(1);
+        vector<int> f(n, 0);
+        for (int i = 0; i < n; i++) {
+            if (g[0][i]) {
+                f[i] = 0;
+                continue;
+            }
+            for (int j = 0; j < i; j++) {
+                if (g[j][i - 1]) f[i] = std::min(f[i], f[j] + 1);
+            }
         }
-        else {
-            // 这里的下标从0开始，所以要减去一
-            ans[depth-1] += root->val;
-            size[depth-1]++;
-        }
-        dfs(root->left, depth+1, ans, size);
-        dfs(root->right, depth+1, ans, size);
+        return f[n - 1];
     }
 };
 
