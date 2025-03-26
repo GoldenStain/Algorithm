@@ -54,33 +54,28 @@ using std::vector;
 
 class Solution {
    public:
-    int minCut(string s) {
-        int n = s.size();
-        if (n == 1) {
-            return 0;
+    vector<vector<int>> levelOrder(TreeNode *root) {
+        if (!root) {
+            return vector<vector<int>> {};
         }
-        vector<vector<bool>> g(n, vector<bool>(n, false));
-        for (int i = 0; i < n; i++) g[i][i] = true;
-        for (int len = 2; len < n; len++) {
-            for (int i = 0; i + len <= n; i++) {
-                int j = i + len - 1;
-                if (i + 1 > j - 1)
-                    g[i][j] = (s[i] == s[j]);
-                else
-                    g[i][j] = g[i + 1][j - 1] & (s[i] == s[j]);
+        vector<vector<int>> ans;
+        queue<TreeNode*> q;
+        q.push(root);
+        while(q.size()) {
+            int n = q.size();
+            vector<int> tmp;
+            for (int i = 1; i <= n; i++) {
+                TreeNode* head = q.front();
+                tmp.emplace_back(head->val);
+                q.pop();
+                if (head->left)
+                    q.push(head->left);
+                if (head->right)
+                    q.push(head->right);
             }
+            ans.emplace_back(std::move(tmp));
         }
-        vector<int> f(n, 0);
-        for (int i = 0; i < n; i++) {
-            if (g[0][i]) {
-                f[i] = 0;
-                continue;
-            }
-            for (int j = 0; j < i; j++) {
-                if (g[j][i - 1]) f[i] = std::min(f[i], f[j] + 1);
-            }
-        }
-        return f[n - 1];
+        return ans;
     }
 };
 
