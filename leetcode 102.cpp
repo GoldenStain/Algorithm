@@ -23,3 +23,26 @@ class Solution {
         return ans;
     }
 };
+
+// DFS version
+class Solution {
+    public:
+     vector<vector<int>> levelOrder(TreeNode *root) {
+         if (!root) {
+             return vector<vector<int>> {};
+         }
+         vector<vector<int>> ans;
+         dfs(root, 1, ans);
+     }
+     void dfs(TreeNode *root, int depth, vector<vector<int>>& ans) {
+         if (!root) {
+             return;
+         }
+         if (ans.size() < depth) {
+             ans.push_back(vector<int>{});
+         }
+         ans[depth - 1].push_back(root->val);
+         dfs(root->left, depth + 1, ans);
+         dfs(root->right, depth + 1, ans);
+     }
+ };
