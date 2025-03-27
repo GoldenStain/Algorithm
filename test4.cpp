@@ -54,33 +54,35 @@ using std::string;
 using std::vector;
 
 class Solution {
+    using VecInt = vector<int>;
    public:
-    vector<vector<int>> zigzagLevelOrder(TreeNode *root) {
-        if (!root) {
-            return vector<vector<int>>{};
+    int findLength(vector<int> &nums1, vector<int> &nums2) {
+        int n1 = nums1.size(), n2 = nums2.size();
+        int ans = 0;
+        // 移动nums1
+        for (int i = 0; i < n1; i++) {
+            ans = std::max(ans, getAns(nums1, i, nums2, 0));
         }
-        std::queue<TreeNode *> q;
-        vector<vector<int>> ans;
-        q.push(root);
-        int depth = 1;
-        while (q.size()) {
-            int n = q.size();
-            std::deque<int> tmp;
-            for (int i = 0; i < n; i++) {
-                auto head = q.front();
-                q.pop();
-                if (depth & 1) {
-                    tmp.push_back(head->val);
-                } else {
-                    tmp.push_front(head->val);
-                }
-                if (head->left) q.push(head->left);
-                if (head->right) q.push(head->right);
-            }
-            ans.emplace_back(vector<int>(tmp.begin(), tmp.end()));
-            depth++;
+        // 移动nums2
+        for (int i = 0; i < n2; i++) {
+            ans = std::max(ans, getAns(nums1, 0, nums2, i));
         }
         return ans;
+    }
+    int getAns(VecInt& a, int oa, VecInt& b, int ob) {
+        int len = std::min(a.size() - oa, b.size() - ob), res = 0;
+        // 需要两个变量来配合统计，如果只用一个变量，那么后面的更小重复字串可能会覆盖前面更长的重复字串，导致我们丢失正确答案。
+        int now_len = 0;
+        for (int i = 0; i < len; i++) {
+            char ca = a[oa + i], cb = b[ob + i];
+            if (ca == cb)
+                now_len++;
+            else {
+                res = std::max(res, now_len);
+                now_len = 0;
+            }
+        }
+        return res;
     }
 };
 
