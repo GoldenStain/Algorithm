@@ -1275,6 +1275,8 @@ while (check() && l <= r) {
 如果判定条件是这样
 `while (fast && fast->next)`
 那么当链表长度是奇数的时候，最后fast停在尾部；偶数的话就是nullptr，而且slow会停在后半部分的第一个点，这不利于我们处理；
+**解决办法**
+我们只要在slow移动之前加一个if，如果fast到了nullptr，我们就不移动，这样slow就能停靠在前半部分了。
 
 所以我们可以这样：
 `while (fast->next && fast->next->next)` 

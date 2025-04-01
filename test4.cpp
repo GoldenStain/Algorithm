@@ -85,7 +85,8 @@ class Solution {
         ListNode *slow = left, *fast = left;
         while(fast != right && fast->next != right) {
             fast = fast->next->next;
-            slow = slow->next;
+            if (fast != right)
+                slow = slow->next;
         }
         return slow;
     }
