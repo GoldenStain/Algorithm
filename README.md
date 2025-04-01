@@ -1815,4 +1815,4 @@ tip：因为我们事先不知道链表的终点，也不能使用left > right�
 2. 借助中序遍历
 
 建立一个cur指针从head开始移动，如果cur还没移动到当前位置，就只创建tree节点不赋值；等cur移动过来以后，再给tree节点赋值。
-tip：left > right -> 当前是空区间 -> 创建的是空节点
+tip：left > right -> 当前是空区间 -> 创建的是空节点 （这里的left和right是数字不是指针）

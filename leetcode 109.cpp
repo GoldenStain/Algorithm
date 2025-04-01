@@ -30,3 +30,36 @@ class Solution {
         return slow;
     }
 };
+
+// solution 2
+class Solution {
+   public:
+    TreeNode *sortedListToBST(ListNode *head) {
+        if (!head) {
+            return nullptr;
+        }
+        int len = getLen(head);
+        return buildTree(head, 1, len);
+    }
+    int getLen(ListNode *head) {
+        int cnt = 0;
+        while (head) {
+            cnt++;
+            head = head->next;
+        }
+        return cnt;
+    }
+    // [left, right]闭区间
+    TreeNode *buildTree(ListNode *&head, int left, int right) {
+        if (left > right) {
+            return nullptr;
+        }
+        int mid = (left + right) >> 1;
+        TreeNode *now = new TreeNode();
+        now->left = buildTree(head, left, mid - 1);
+        now->val = head->val;
+        head = head->next;
+        now->right = buildTree(head, mid + 1, right);
+        return now;
+    }
+};
