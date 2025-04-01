@@ -76,8 +76,11 @@ class Solution {
             return nullptr;
         }
         ListNode *mid = getMid(left, right);
+        // mid点已经在此处创建，所以后续的left和right函数不再需要考虑这个点
         TreeNode *now = new TreeNode(mid->val);
+        // (left, mid]区间
         now->left = buildTree(left, mid);
+        // [mid->next, right)区间
         now->right = buildTree(mid->next, right);
         return now;
     }
@@ -85,8 +88,7 @@ class Solution {
         ListNode *slow = left, *fast = left;
         while(fast != right && fast->next != right) {
             fast = fast->next->next;
-            if (fast != right)
-                slow = slow->next;
+            slow = slow->next;
         }
         return slow;
     }
