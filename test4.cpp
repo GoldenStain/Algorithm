@@ -49,41 +49,45 @@ struct TreeNode {
         : val(x), left(left), right(right) {}
 };
 
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode* next) : val(x), next(next) {}
+};
+
 using std::queue;
 using std::shared_ptr;
 using std::string;
 using std::vector;
 
-// The rand7() API is already defined for you.
-// int rand7();
-// @return a random integer in the range 1 to 7
-
 class Solution {
    public:
-    int rand7();
-    int rand10() {
-        while (true) {
-            int a = rand7(), b = rand7();
-            int res = (a - 1) * 7 + b - 1;
-            if (res < 40) {
-                return res / 4 + 1;
-            }
-            // a -> 9
-            b = rand7();
-            a = res - 40;
-            res = a * 7 + b - 1;
-            if (res < 60) {
-                return res / 6 + 1;
-            }
-            // a -> 3
-            b = rand7();
-            a = res - 60;
-            res = a * 7 + b - 1;
-            if (res < 20) {
-                return res / 2 + 1;
-            }
-            // a -> 1，无法和b组合出rand10了，进入新一轮循环。
+    TreeNode* sortedListToBST(ListNode* head) {
+        if (!head) {
+            return nullptr;
         }
+        return buildTree(head, nullptr);
+    }
+    // [left, right) 区间
+    TreeNode *buildTree(ListNode *left, ListNode *right) {
+        if (left == right) {
+            return nullptr;
+        }
+        ListNode *mid = getMid(left, right);
+        TreeNode *now = new TreeNode(mid->val);
+        now->left = buildTree(left, mid);
+        now->right = buildTree(mid->next, right);
+        return now;
+    }
+    ListNode *getMid(ListNode *left, ListNode *right) {
+        ListNode *slow = left, *fast = left;
+        while(fast != right && fast->next != right) {
+            fast = fast->next->next;
+            slow = slow->next;
+        }
+        return slow;
     }
 };
 
