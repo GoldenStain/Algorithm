@@ -64,23 +64,19 @@ using std::vector;
 
 class Solution {
    public:
-    static constexpr int L = 1e6;
     int firstMissingPositive(vector<int>& nums) {
         int n = nums.size();
         for (int i = 0; i < n; i++) {
-            if (nums[i] <= 0) {
-                nums[i] = L;
-            }  // 先排除负数的干扰
-        }
-        for (int i = 0; i < n; i++) {
-            int x = std::abs(nums[i]);
-            if (x <= n) {
-                nums[x - 1] = -std::abs(nums[x - 1]);
+            while (nums[i] != i + 1) {
+                if (nums[i] <= 0 || nums[i] > n || nums[i] == nums[nums[i] - 1])
+                    break;
+                // 这些值在1~N的合法序列中没有一席之地，可以break了。
+                // 交换无效，也可以break了
+                std::swap(nums[i], nums[nums[i] - 1]);
             }
         }
-        for (int i = 0; i < n; i++) {
-            if (nums[i] > 0) return i + 1;
-        }
+        for (int i = 0; i < n; i++)
+            if (nums[i] != i + 1) return i + 1;
         return n + 1;
     }
 };
