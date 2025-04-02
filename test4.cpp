@@ -64,33 +64,24 @@ using std::vector;
 
 class Solution {
    public:
-    TreeNode* sortedListToBST(ListNode* head) {
-        if (!head) {
-            return nullptr;
+    static constexpr int L = 1e6;
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size();
+        for (int i = 0; i < n; i++) {
+            if (nums[i] <= 0) {
+                nums[i] = L;
+            }  // 先排除负数的干扰
         }
-        int len = getLen(head);
-        return buildTree(head, 1, len);
-    }
-    int getLen(ListNode *head) {
-        int cnt = 0;
-        while(head) {
-            cnt++;
-            head = head->next;
+        for (int i = 0; i < n; i++) {
+            int x = std::abs(nums[i]);
+            if (x <= n) {
+                nums[x - 1] = -std::abs(nums[x - 1]);
+            }
         }
-        return cnt;
-    }
-    // [left, right]闭区间
-    TreeNode* buildTree(ListNode* &head, int left, int right) {
-        if (left > right) {
-            return nullptr;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > 0) return i + 1;
         }
-        int mid = (left + right) >> 1;
-        TreeNode *now = new TreeNode();
-        now->left = buildTree(head, left, mid - 1);
-        now->val = head->val;
-        head = head->next;
-        now->right = buildTree(head, mid + 1, right);
-        return now;
+        return n + 1;
     }
 };
 
