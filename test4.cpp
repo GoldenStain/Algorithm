@@ -64,22 +64,19 @@ using std::vector;
 
 class Solution {
    public:
-    int superEggDrop(int k, int n) {
-        vector<vector<long long>> f(n + 1, vector<long long>(k + 1, 0));
-        for (int i = 1; i <= n; i++) {
-            f[i][1] = i;
-            // 这里不需要像wrong
-            // Solution那样加特判，因为后面的f[i][k]会覆盖这种这种可能
-        }
-        for (int i = 1; i <= n; i++) {
-            for (int j = 2; j <= k; j++) {
-                f[i][j] = 1 + f[i - 1][j] + f[i - 1][j - 1];
-            }
-            if (f[i][k] >= n) {
-                return i;
-            }
-        }
-        return 0;
+    int minPathSum(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        vector<vector<int>> f(n, vector<int>(m, 400 * 400));
+        // 第一行
+        for (int i = 0; i < m; i++)
+            f[0][i] = i == 0 ? grid[0][i] : f[0][i - 1] + grid[0][i];
+        // 第一列
+        for (int i = 0; i < n; i++)
+            f[i][0] = i == 0 ? grid[i][0] : f[i - 1][0] + grid[i][0];
+        for (int i = 1; i < n; i++)
+            for (int j = 1; j < m; j++)
+                f[i][j] = std::min(f[i - 1][j], f[i][j - 1]) + grid[i][j];
+        return f[n - 1][m - 1];
     }
 };
 
