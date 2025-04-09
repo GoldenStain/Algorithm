@@ -27,6 +27,8 @@ class Solution {
                 prev = now;
                 now = _next;
             }
+            // 如果是翻转整个链表的话，最后now会移动到nullptr，那么p->next->next = now，就会保证新链表能走到nullptr
+            // 比如1->2->3->4，整个翻转，最后我们需要把1的next设置成nullptr，这个操作由p->next->next = now;完成
             p->next->next = now;
             p->next = prev;
             return dummy->next;

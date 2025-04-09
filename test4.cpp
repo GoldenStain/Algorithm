@@ -64,32 +64,35 @@ using std::vector;
 
 class Solution {
    public:
-    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
-        int n = obstacleGrid.size(), m = obstacleGrid[0].size();
-        vector<vector<int>> f(n, vector<int>(m, 0));
-        for (int i = 0; i < m; i++) {
-            if (obstacleGrid[0][i] == 1)
-                f[0][i] = 0;
-            else {
-                f[0][i] = i == 0 ? 1 : f[0][i - 1];
-            }
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        if (!head || !head->next) {
+            return head;
         }
-        for (int i = 0; i < n; i++) {
-            if (obstacleGrid[i][0])
-                f[i][0] = 0;
-            else {
-                f[i][0] = i == 0 ? 1 : f[i - 1][0];
-            }
+        ListNode* dummy = new ListNode(-1000, head);
+        int cnt = 0;
+        ListNode *cur = dummy, *prev = nullptr;
+        while (cnt < left) {
+            cnt++;
+            prev = cur;
+            cur = cur->next;
         }
-        for (int i = 1; i < n; i++)
-            for (int j = 1; j < m; j++)
-                if (obstacleGrid[i][j])
-                    f[i][j] = 0;
-                else
-                    f[i][j] = f[i - 1][j] + f[i][j - 1];
-        return f[n - 1][m - 1];
+        ListNode* left_bound = prev;
+        // 再次移动
+        cnt++;
+        prev = cur;
+        cur = cur->next;
+        for (; cnt <= right; cnt++) {
+            ListNode* tmp = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = tmp
+        }
+        left_bound->next->next = cur;
+        left_bound->next = prev;
+        return dummy->next;
     }
 };
+
 int main() {
     string s;
     std::cout << s.size() << std::endl;
