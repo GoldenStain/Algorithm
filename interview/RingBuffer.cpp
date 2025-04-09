@@ -16,9 +16,9 @@ public:
   size_t Size() const noexcept{}
 
 private:
-  // cache align
-  alignas(64) std::atomic<size_t> read_;
-  alignas(64) std::atomic<size_t> write_;
+  // cache align, read_和write_就是头尾指针
+  alignas(64) std::atomic<size_t> read_; // head
+  alignas(64) std::atomic<size_t> write_;// tail
   // 注意这里不是一个函数，是一个类型别名，所以要用[]，而不是()
   // 用法：<大小，对齐方式>
   alignas(64) std::aligned_storage_t<sizeof(T), alignof(T)> data_[Capacity];
