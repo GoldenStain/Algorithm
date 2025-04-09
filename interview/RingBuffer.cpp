@@ -8,7 +8,7 @@ public:
                 "Capacity must be power of 2!\n");
   RingBuffer() : read_(0), write_(0) {}
   template<typename U>
-  // 如果直接用T，T会被推导为具体类型，无法触发完美转发
+  // 如果直接用T，T会被推导为具体类型（应该还会有引用折叠），无法触发完美转发
   bool Push(U&& value) noexcept {}
 
   bool Pop(T& val) noexcept {}
