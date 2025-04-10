@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <stdio.h>
 #include <string.h>
 
@@ -13,48 +14,48 @@
 
 #define For(i, j, n) for (int i = j; i <= n; ++i)
 #ifdef DEBUG
-#define DEBUG_LOG(fmt, ...)                  \
-    do {                                     \
-        fprintf(stderr, fmt, ##__VA_ARGS__); \
-    } while (0);
+#define DEBUG_LOG(fmt, ...)                                                    \
+  do {                                                                         \
+    fprintf(stderr, fmt, ##__VA_ARGS__);                                       \
+  } while (0);
 #else
-#define DEBUG_LOG(fmt, ...) \
-    do {                    \
-    } while (0);
+#define DEBUG_LOG(fmt, ...)                                                    \
+  do {                                                                         \
+  } while (0);
 #endif
 
-template <typename T>
-inline T read() {
-    T x = 0;
-    int f = 1;
-    char ch = getchar();
-    while (ch < '0' || ch > '9') {
-        if (ch == '-') f = -1;
-        ch = getchar();
-    }
-    while (ch >= '0' && ch <= '9') {
-        x = x * 10 + ch - '0';
-        ch = getchar();
-    }
-    return x * f;
+template <typename T> inline T read() {
+  T x = 0;
+  int f = 1;
+  char ch = getchar();
+  while (ch < '0' || ch > '9') {
+    if (ch == '-')
+      f = -1;
+    ch = getchar();
+  }
+  while (ch >= '0' && ch <= '9') {
+    x = x * 10 + ch - '0';
+    ch = getchar();
+  }
+  return x * f;
 }
 
 struct TreeNode {
-    int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode* left, TreeNode* right)
-        : val(x), left(left), right(right) {}
+  int val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {}
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+  TreeNode(int x, TreeNode *left, TreeNode *right)
+      : val(x), left(left), right(right) {}
 };
 
 struct ListNode {
-    int val;
-    ListNode* next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode* next) : val(x), next(next) {}
+  int val;
+  ListNode *next;
+  ListNode() : val(0), next(nullptr) {}
+  ListNode(int x) : val(x), next(nullptr) {}
+  ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
 using std::queue;
@@ -63,38 +64,52 @@ using std::string;
 using std::vector;
 
 class Solution {
-   public:
-    ListNode* reverseBetween(ListNode* head, int left, int right) {
-        if (!head || !head->next) {
-            return head;
-        }
-        ListNode* dummy = new ListNode(-1000, head);
-        int cnt = 0;
-        ListNode *cur = dummy, *prev = nullptr;
-        while (cnt < left) {
-            cnt++;
-            prev = cur;
-            cur = cur->next;
-        }
-        ListNode* left_bound = prev;
-        // 再次移动
-        cnt++;
-        prev = cur;
-        cur = cur->next;
-        for (; cnt <= right; cnt++) {
-            ListNode* tmp = cur->next;
-            cur->next = prev;
-            prev = cur;
-            cur = tmp
-        }
-        left_bound->next->next = cur;
-        left_bound->next = prev;
-        return dummy->next;
+public:
+  ListNode *reverseKGroup(ListNode *head, int k) {
+    if (!head || !head->next)
+      return head;
+    int len = getLength(head);
+    ListNode *dummy = new ListNode(-1, head);
+    ListNode *precedor = dummy;
+    int pos = 0;
+    // 不包括pos自己，所以不用-1
+    while (pos + k <= len) {
+      oneReverse(precedor, 1, k);
+      // 移动当前位置
+      pos += k;
     }
+    return dummy->next;
+  }
+  int getLength(ListNode *head) {
+    int cnt = 0;
+    while (head) {
+      cnt++;
+      head = head->next;
+    }
+    return cnt;
+  }
+  void oneReverse(ListNode *&precedor, int left, int right) {
+    ListNode *cur = precedor->next, *prev = precedor;
+    for (int cnt = left; cnt <= right; cnt++) {
+      ListNode *tmp_next = cur->next;
+      if (cnt > left) {
+        cur->next = prev;
+      }
+      prev = cur;
+      cur = tmp_next;
+    }
+    // 原来的第一个变成了最后一个，也是下一段的precedor
+    ListNode *new_precedor = precedor->next;
+    new_precedor->next = cur;
+    // 最后一个变成第一个
+    precedor->next = prev;
+    // 更新precedor
+    precedor = new_precedor;
+  }
 };
 
 int main() {
-    string s;
-    std::cout << s.size() << std::endl;
-    return 0;
+  string s;
+  std::cout << s.size() << std::endl;
+  return 0;
 }

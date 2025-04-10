@@ -1,39 +1,44 @@
 class Solution {
-   public:
-    ListNode* reverseKGroup(ListNode* head, int k) {
-        if (!head) return head;
-        int n = get_len(head);
-        ListNode *dummy = new ListNode(-1, head), *cur = dummy;
-        for (int now = 0; now + k <= n; now += k) {
-            std::cout << now << std::endl;
-            cur = onceReverse(cur, k);
+    public:
+      ListNode *reverseKGroup(ListNode *head, int k) {
+        if (!head || !head->next)
+          return head;
+        int len = getLength(head);
+        ListNode *dummy = new ListNode(-1, head);
+        ListNode *precedor = dummy;
+        int pos = 0;
+        // 不包括pos自己，所以不用-1
+        while (pos + k <= len) {
+          oneReverse(precedor, 1, k);
+          // 移动当前位置
+          pos += k;
         }
         return dummy->next;
-    }
-
-   private:
-    int get_len(ListNode* head) {
-        int n = 0;
+      }
+      int getLength(ListNode *head) {
+        int cnt = 0;
         while (head) {
-            n++;
-            head = head->next;
+          cnt++;
+          head = head->next;
         }
-        return n;
-    }
-    ListNode* onceReverse(ListNode* d, int k) {
-        ListNode *cur = d, *prev = nullptr;
-        for (int i = 0; i <= k; i++) {
-            ListNode* _next = cur->next;
-            if (i > 1) {
-                cur->next = prev;
-            }
-            prev = cur;
-            cur = _next;
+        return cnt;
+      }
+      void oneReverse(ListNode *&precedor, int left, int right) {
+        ListNode *cur = precedor->next, *prev = precedor;
+        for (int cnt = left; cnt <= right; cnt++) {
+          ListNode *tmp_next = cur->next;
+          if (cnt > left) {
+            cur->next = prev;
+          }
+          prev = cur;
+          cur = tmp_next;
         }
-        // 内部关系调整完毕，要调整和外部的链接关系
-        ListNode* ans = d->next;
-        ans->next = cur;
-        d->next = prev;
-        return ans;
-    }
-};
+        // 原来的第一个变成了最后一个，也是下一段的precedor
+        ListNode *new_precedor = precedor->next;
+        new_precedor->next = cur;
+        // 最后一个变成第一个
+        precedor->next = prev;
+        // 更新precedor
+        precedor = new_precedor;
+      }
+    };
