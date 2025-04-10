@@ -63,21 +63,7 @@ using std::shared_ptr;
 using std::string;
 using std::vector;
 
-class Solution {
-public:
-  // lastNode是在回溯过程中，经过的上一个节点。
-  TreeNode *lastNode = nullptr;
-  void flatten(TreeNode *root) {
-    if (!root)
-      return;
-    flatten(root->right);
-    flatten(root->left);
-    // 不需要显式地链接左右子树，因为在flatten(root->left)的时候，在子树最底部的节点，root->right = lastNode已经完成了这个任务
-    root->left = nullptr;
-    root->right = lastNode;
-    lastNode = root;
-  }
-};
+
 
 int main() {
   string s;

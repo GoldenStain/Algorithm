@@ -24,21 +24,19 @@ public:
   void flatten(TreeNode *root) {
     if (!root)
       return;
-    TreeNode *cur = root;
-    while (cur) {
-      if (cur->left) {
-        TreeNode *next = cur->left;
-        TreeNode *p = next;
-        while (p->right)
-          p = p->right;
-        if (p)
-          p->right = cur->right;
-        // 同样要记得断开左边的链接
-        cur->left = nullptr;
-        cur->right = next;
+    while (root) {
+      TreeNode *root_left = root->left, *right_in_left = root_left;
+      // 这个循环内部也是一种递归的逻辑
+      while (right_in_left && right_in_left->right) {
+        right_in_left = right_in_left->right;
       }
-
-      cur = cur->right;
+      if (right_in_left) {
+        right_in_left->right = root->right;
+        // 注意一下两行语句的顺序，千万不能搞反了
+        root->right = root->left;
+        root->left = nullptr;
+      }
+      root = root->right;
     }
   }
 };
