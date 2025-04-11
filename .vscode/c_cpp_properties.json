@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "Wsl2",
             "includePath": [
                 "${workspaceFolder}/**"
             ],
@@ -10,7 +10,7 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:/mingw64/bin/g++.exe",
+            "compilerPath": "/usr/lib/ccache/clang++",
             "cppStandard": "c++20",
             "cStandard": "c99"
         }

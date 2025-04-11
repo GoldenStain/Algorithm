@@ -63,10 +63,8 @@ using std::shared_ptr;
 using std::string;
 using std::vector;
 
-
-
 int main() {
-  string s;
-  std::cout << s.size() << std::endl;
+  int x = 0x3f3f3f3f;
+  std::cout << x << std::endl;
   return 0;
 }
