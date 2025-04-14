@@ -9,7 +9,19 @@ public:
   RingBuffer() : read_(0), write_(0) {}
   template<typename U>
   // 如果直接用T，T会被推导为具体类型（应该还会有引用折叠），无法触发完美转发
-  bool Push(U&& value) noexcept {}
+  bool Push(U&& value) noexcept {
+    const size_t w = write_.load(std::memory_order_relaxed);
+    const size_t next_w = (w + 1) & (Capacity - 1);
+
+    // Check if the buffer is full
+    if (next_w == read_.load(std::memory_order_acquire))
+        return false;
+
+    // put new element
+    new (&data_[w]) T(std::forward<U>(value));
+    write_.store(next_w, std::memory_order_release);
+    return true;
+  }
 
   bool Pop(T& val) noexcept {}
 
