@@ -68,33 +68,66 @@ public:
   ListNode *quickSortList(ListNode *head) {
     if (!head || !head->next)
       return head;
-    quickSort(head, nullptr);
-    return head;
+    ListNode *dummy = new ListNode(-1);
+    dummy->next = head;
+    quickSort(dummy, head, nullptr);
+    return dummy->next;
   }
-  // 对[head, tail)区间进行排序
-  void quickSort(ListNode *head, ListNode *tail) {
+
+private:
+  void quickSort(ListNode *dummy, ListNode *head, ListNode *tail) {
     if (head == tail)
       return;
     ListNode *p = head, *q = p->next;
-    // (head, p]都是小于head->val的，(p, q]都是大于等于的
+    ListNode *prev_p = dummy, *prev_q = p;
     while (q != tail) {
       if (q->val < head->val) {
+        prev_p = p;
         p = p->next;
-        std::swap(p->val, q->val);
+        if (p != q) {
+          swapNode(prev_p, prev_q);
+          // swapNode执行之后，修改了链表结构，p跑到后面去了，q则在前面，我们需要再交换一下指针的指向
+          std::swap(p, q);
+        }
       }
+      prev_q = q;
       q = q->next;
     }
-    // 如果head和p不在同一个点，把head的值放到p上，即把哨兵放到p，那么,[head,
-    // p)<pivot, (p, tail)>=pivot，下次排序就不用考虑p，区间就缩小了
-    if (head != p)
-      std::swap(head->val, p->val);
-    quickSort(head, p);
-    quickSort(p->next, tail);
+    if (p != head) {
+      swapNode(dummy, prev_p);
+      std::swap(p, head);
+    }
+
+    // 因为我们改变了链表结构，所以head可能不再是head了，我们要用dummy->next来定位链表头
+    quickSort(dummy, dummy->next, p);
+    quickSort(p, p->next, tail);
+  }
+
+  void swapNode(ListNode *prev_p, ListNode *prev_q) {
+    ListNode* p = prev_p->next, *q = prev_q->next;
+    ListNode* new_p = new ListNode(q->val), *new_q = new ListNode(p->val);
+    new_p->next = p->next;
+    new_q->next = q->next;
+    prev_p->next = new_p;
+    prev_q->next = new_q;
   }
 };
 
 int main() {
-  int x = 0x3f3f3f3f;
-  std::cout << x << std::endl;
+  Solution s;
+  ListNode *arr = new ListNode[5];
+  arr[0].val = 4;
+  arr[1].val = 1;
+  arr[2].val = -4;
+  arr[3].val = 2;
+  arr[4].val = -1;
+  for (int i = 0; i < 4; i++)
+    arr[i].next = &arr[i + 1];
+  s.quickSortList(arr);
+  ListNode *st = arr;
+  while (st) {
+    std::cout << st->val << " ";
+    st = st->next;
+  }
   return 0;
 }
