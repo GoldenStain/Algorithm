@@ -20,7 +20,7 @@ public:
       q = q->next;
     }
     // 如果head和p不在同一个点，把head的值放到p上，即把哨兵放到p，那么,[head,
-    // p)<pivot, (p, tail)>=pivot，下次排序就不用考虑p，区间就缩小了
+    // p)<pivot, (p, tail)>=pivot，p==pivot，下次排序就不用考虑p，区间就缩小了
     if (head != p)
       std::swap(head->val, p->val);
     quickSort(head, p);
