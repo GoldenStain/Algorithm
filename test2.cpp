@@ -65,36 +65,39 @@ using std::vector;
 
 class Solution {
 public:
-  int findKthLargest(vector<int> &nums, int k) {
-    int n = nums.size();
-    return worker(nums, 0, n - 1, k - 1);
-  }
-  int worker(vector<int> &nums, int l, int r, int k) {
-    if (l == r)
-      return nums[k];
-    int pivot = (l + r + 1) >> 1;
-    pivot = nums[pivot];
-    int i = l - 1, j = r + 1;
-    while (i < j) {
-      do {
-        i++;
-      } while (nums[i] > pivot);
-      do {
-        j--;
-      } while (nums[j] < pivot);
-      if (i < j)
-        std::swap(nums[j], nums[i]);
-    }
-    if (i > k)
-      return worker(nums, l, i - 1, k);
+  double findMedianSortedArrays(vector<int> &nums1, vector<int> &nums2) {
+    int n1 = nums1.size(), n2 = nums2.size();
+    if ((n1 + n2) % 2 == 0)
+      return ((double)findKthEle(nums1, nums2, (n1 + n2) / 2) +
+              (double)findKthEle(nums1, nums2, (n1 + n2) / 2 + 1)) /
+             2;
     else
-      return worker(nums, i, r, k);
+      return (double)findKthEle(nums1, nums2, (n1 + n2 + 1) / 2);
+  }
+  int findKthEle(vector<int> &nums1, vector<int> &nums2, int k) {
+    int l1 = 0, l2 = 0;
+    while (k > 1 && l1 < nums1.size() && l2 < nums2.size()) {
+      // 注意不能超过了nums1或者nums2还剩下元素的个数
+      int k1 = std::min(k >> 1, static_cast<int>(nums1.size() - l1));
+      int k2 = std::min(k - k1, static_cast<int>(nums2.size() - l2));
+      if (nums1[l1 + k1 - 1] <= nums2[l2 + k2 - 1]) {
+        k -= k1;
+        l1 = l1 + k1;
+      } else {
+        k -= k2;
+        l2 = l2 + k2;
+      }
+    }
+    // 这里也要小心访问到越界的值
+    int x1 = (l1 < nums1.size()) ? nums1[l1 + k - 1] : 1e7,
+        x2 = (l2 < nums2.size()) ? nums2[l2 + k - 1] : 1e7;
+    return std::min(x1, x2);
   }
 };
 
 int main() {
+  vector<int> n1 = {1, 2}, n2 = {3, 4};
   Solution s;
-  vector<int> nums{3, 2, 3, 1, 2, 4, 5, 5, 6};
-  std::cout << s.findKthLargest(nums, 2) << std::endl;
+  std::cout << s.findMedianSortedArrays(n1, n2) << std::endl;
   return 0;
 }
