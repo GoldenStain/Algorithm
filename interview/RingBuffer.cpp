@@ -12,7 +12,8 @@ public:
   ~RingBuffer() {
     size_t r = read_.load(std::memory_order_relaxed),
            w = write_.load(std::memory_order_relaxed);
-    while (r != w) {
+    size_t remaining = (w - r + Capacity) & (Capacity - 1);
+    while (remaining--) {
       reinterpret_cast<T *>(&data_[r])->~T();
       r = (r + 1) & (Capacity - 1);
     }
