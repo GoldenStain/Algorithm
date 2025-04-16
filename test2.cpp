@@ -1,14 +1,15 @@
-#include <cstddef>
-#include <stdio.h>
-#include <string.h>
-
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <deque>
 #include <iostream>
+#include <list>
 #include <memory>
 #include <queue>
+#include <stdio.h>
+#include <string.h>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -58,43 +59,68 @@ struct ListNode {
   ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
+using std::list;
 using std::queue;
 using std::shared_ptr;
 using std::string;
+using std::unordered_map;
 using std::vector;
 
-class Solution {
+class LRUCache {
+  using PII = std::pair<int, int>;
+
 public:
-  int findKthLargest(vector<int> &nums, int k) {
-    int n = nums.size();
-    return worker(nums, 0, n - 1, k - 1);
-  }
-  int worker(vector<int> &nums, int l, int r, int k) {
-    if (l == r)
-      return nums[k];
-    int pivot = (l + r + 1) >> 1;
-    pivot = nums[pivot];
-    int i = l - 1, j = r + 1;
-    while (i < j) {
-      do {
-        i++;
-      } while (nums[i] > pivot);
-      do {
-        j--;
-      } while (nums[j] < pivot);
-      if (i < j)
-        std::swap(nums[j], nums[i]);
+  LRUCache(int capacity) : capacity_(capacity) {}
+
+  int get(int key) {
+    auto kv_pair = M.find(key);
+    if (kv_pair == M.end()) {
+      return -1;
     }
-    if (i > k)
-      return worker(nums, l, i, k);
-    else
-      return worker(nums, i, r, k);
+    auto link_node = kv_pair->second;
+    int ans = link_node->second;
+    replace_node(link_node, ans);
+    M[key] = link_.begin();
+    return ans;
+  }
+
+  void put(int key, int value) {
+    auto kv_pair = M.find(key);
+    if (kv_pair == M.end()) {
+      link_.push_front({key, value});
+      M[key] = link_.begin();
+      if (size_ == capacity_)
+        remove_old();
+      else
+       size_++;
+    } else {
+      replace_node(kv_pair->second, value);
+      M[key] = link_.begin();
+    }
+  }
+
+private:
+  int capacity_ = 0, size_ = 0;
+  unordered_map<int, list<PII>::iterator> M;
+  list<PII> link_;
+  void replace_node(list<PII>::iterator node, int value) {
+    int key = node->first;
+    link_.erase(node);
+    link_.push_front({key, value});
+  }
+  void remove_old() {
+    auto node = link_.back();
+    int key = node.first;
+    link_.pop_back();
+    M.erase(key);
   }
 };
 
-int main() {
-  vector<int> nums = {3,2,1,5,6,4};
-  Solution s;
-  std::cout << s.findKthLargest(nums, 2) << std::endl;
-  return 0;
-}
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
+
+int main() { return 0; }
