@@ -66,53 +66,20 @@ using std::string;
 using std::unordered_map;
 using std::vector;
 
-class LRUCache {
-  using PII = std::pair<int, int>;
-
+class Solution {
 public:
-  LRUCache(int capacity) : capacity_(capacity) {}
-
-  int get(int key) {
-    auto kv_pair = M.find(key);
-    if (kv_pair == M.end()) {
-      return -1;
+  long long countFairPairs(vector<int> &nums, int lower, int upper) {
+    std::sort(nums.begin(), nums.end());
+    int n = nums.size();
+    long long ans = 0;
+    for (int i = 0; i < n; i++) {
+        int B = upper - nums[i], A = lower - nums[i];
+        std::vector<int>::iterator right_bound = std::upper_bound(nums.begin(), nums.begin() + i, B),
+        left_bound = std::lower_bound(nums.begin(), nums.begin() + i, A);
+        // 同样地，要避免重复
+        ans += (long long)(right_bound - left_bound);
     }
-    auto link_node = kv_pair->second;
-    int ans = link_node->second;
-    replace_node(link_node, ans);
-    M[key] = link_.begin();
     return ans;
-  }
-
-  void put(int key, int value) {
-    auto kv_pair = M.find(key);
-    if (kv_pair == M.end()) {
-      link_.push_front({key, value});
-      M[key] = link_.begin();
-      if (size_ == capacity_)
-        remove_old();
-      else
-       size_++;
-    } else {
-      replace_node(kv_pair->second, value);
-      M[key] = link_.begin();
-    }
-  }
-
-private:
-  int capacity_ = 0, size_ = 0;
-  unordered_map<int, list<PII>::iterator> M;
-  list<PII> link_;
-  void replace_node(list<PII>::iterator node, int value) {
-    int key = node->first;
-    link_.erase(node);
-    link_.push_front({key, value});
-  }
-  void remove_old() {
-    auto node = link_.back();
-    int key = node.first;
-    link_.pop_back();
-    M.erase(key);
   }
 };
 
