@@ -1873,3 +1873,7 @@ https://www.acwing.com/solution/content/16777/
 ## Leetcode 108. 将有序数组转换为二叉搜索树
 
 先建立当前节点，然后再建立左右子树。
+
+## Leetcode 148. 排序链表
+
+这道题细节点非常多，详见注释
