@@ -2,9 +2,11 @@
 #include <cmath>
 #include <cstddef>
 #include <deque>
+#include <functional>
 #include <iostream>
 #include <list>
 #include <memory>
+#include <memory_resource>
 #include <queue>
 #include <stdio.h>
 #include <string.h>
@@ -68,18 +70,18 @@ using std::vector;
 
 class Solution {
 public:
-  long long countFairPairs(vector<int> &nums, int lower, int upper) {
-    std::sort(nums.begin(), nums.end());
+  TreeNode *sortedArrayToBST(vector<int> &nums) {
     int n = nums.size();
-    long long ans = 0;
-    for (int i = 0; i < n; i++) {
-        int B = upper - nums[i], A = lower - nums[i];
-        std::vector<int>::iterator right_bound = std::upper_bound(nums.begin(), nums.begin() + i, B),
-        left_bound = std::lower_bound(nums.begin(), nums.begin() + i, A);
-        // 同样地，要避免重复
-        ans += (long long)(right_bound - left_bound);
-    }
-    return ans;
+    return buildTree(nums, 0, n - 1);
+  }
+  TreeNode *buildTree(vector<int> &nums, int l, int r) {
+    if (l > r)
+      return nullptr;
+    int mid = (l + r) >> 1;
+    TreeNode *new_node = new TreeNode(nums[mid]);
+    new_node->left = buildTree(nums, l, mid - 1);
+    new_node->right = buildTree(nums, mid + 1, r);
+    return new_node;
   }
 };
 
@@ -90,4 +92,11 @@ public:
  * obj->put(key,value);
  */
 
-int main() { return 0; }
+int main() {
+  std::vector<int> nums = {9, 9, 8, 8, 7, 6, 5};
+  auto ans = std::upper_bound(nums.begin(), nums.end(), 9, std::greater<>());
+  std::cout << ans - nums.begin() << std::endl;
+  ans = std::lower_bound(nums.begin(), nums.end(), 7, std::greater<>());
+  std::cout << ans - nums.begin() << std::endl;
+  return 0;
+}
