@@ -82,3 +82,55 @@ public:
     return returnedDummy->next;
   }
 };
+
+// mergeSort solution
+class Solution {
+public:
+  ListNode *sortList(ListNode *head) {
+    if (!head || !head->next)
+      return head;
+    return mergeSort(head, nullptr);
+  }
+
+private:
+  // [head, tail) 左闭右开区间
+  ListNode *mergeSort(ListNode *head, ListNode *tail) {
+    if (head == tail)
+      return nullptr;
+    // 只有一个节点的话，我们手动把这个部分摘出来变成一个单独的链表
+    // 因为合并链表算法要求输入的链表结尾都是nullptr
+    // 这个操作在经过递归合并之后，可以保证参与操作的所有链表，其结尾都是nullptr
+    if (head->next == tail) {
+      head->next = nullptr;
+      return head;
+    }
+    ListNode *mid = findMid(head, tail); // 后半部分第一个点
+    return merge(mergeSort(head, mid), mergeSort(mid, tail));
+  }
+  inline ListNode *findMid(ListNode *head, ListNode *tail) {
+    ListNode *slow = head, *fast = head;
+    while (fast != tail && fast->next != tail) {
+      fast = fast->next->next;
+      slow = slow->next;
+    }
+    return slow;
+  }
+  ListNode *merge(ListNode *a, ListNode *b) {
+    ListNode *dummy = new ListNode(-1), *st = dummy;
+    while (a && b) {
+      if (a->val <= b->val) {
+        st->next = a;
+        a = a->next;
+      } else {
+        st->next = b;
+        b = b->next;
+      }
+      st = st->next;
+    }
+    if (a)
+      st->next = a;
+    if (b)
+      st->next = b;
+    return dummy->next;
+  }
+};

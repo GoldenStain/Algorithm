@@ -70,12 +70,35 @@ using std::vector;
 
 class Solution {
 public:
-  ListNode *mergeKLists(vector<ListNode *> &lists) {
-    int n = lists.size();
-    return mergeLists(lists, 0, n - 1);
+  ListNode *sortList(ListNode *head) {
+    if (!head || !head->next)
+      return head;
+    return mergeSort(head, nullptr);
   }
 
 private:
+  // [head, tail) 左闭右开区间
+  ListNode *mergeSort(ListNode *head, ListNode *tail) {
+    if (head == tail)
+      return nullptr;
+    // 只有一个节点的话，我们手动把这个部分摘出来变成一个单独的链表
+    // 因为合并链表算法要求输入的链表结尾都是nullptr
+    // 这个操作在经过递归合并之后，可以保证参与操作的所有链表，其结尾都是nullptr
+    if (head->next == tail) {
+      head->next = nullptr;
+      return head;
+    }
+    ListNode *mid = findMid(head, tail); // 后半部分第一个点
+    return merge(mergeSort(head, mid), mergeSort(mid, tail));
+  }
+  inline ListNode *findMid(ListNode *head, ListNode *tail) {
+    ListNode *slow = head, *fast = head;
+    while (fast != tail && fast->next != tail) {
+      fast = fast->next->next;
+      slow = slow->next;
+    }
+    return slow;
+  }
   ListNode *merge(ListNode *a, ListNode *b) {
     ListNode *dummy = new ListNode(-1), *st = dummy;
     while (a && b) {
@@ -94,19 +117,7 @@ private:
       st->next = b;
     return dummy->next;
   }
-
-  ListNode *mergeLists(vector<ListNode *> &lists, int l, int r) {
-    if (l == r)
-      return lists[l];
-    // 如果输入的vector为空，会直接到这里
-    // 因此，也可以把这里的特判删掉，在入口函数特判一下vector的size是不是0
-    if (l > r)
-      return nullptr;
-    int mid = (l + r) >> 1;
-    return merge(mergeLists(lists, l, mid), mergeLists(lists, mid + 1, r));
-  }
 };
-
 /**
  * Your LRUCache object will be instantiated and called as such:
  * LRUCache* obj = new LRUCache(capacity);
