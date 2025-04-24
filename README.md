@@ -1934,3 +1934,7 @@ https://www.acwing.com/solution/content/16777/
 ## Leetcode 123. 买卖股票的最佳时机 III
 
 直接给188.的K固定为二即可
+
+## Leetcode 409. 最长回文串
+
+先统计所有字母的出现次数，然后贪心地去构造
