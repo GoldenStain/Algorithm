@@ -1938,3 +1938,7 @@ https://www.acwing.com/solution/content/16777/
 ## Leetcode 409. 最长回文串
 
 先统计所有字母的出现次数，然后贪心地去构造
+
+## Leetcode 3392. 统计符合条件长度为 3 的子数组数目（每日一题）
+
+滑动窗口板子题
