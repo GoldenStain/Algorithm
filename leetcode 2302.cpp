@@ -65,3 +65,19 @@ public:
     return ans;
   }
 };
+
+// best solution
+class Solution {
+public:
+  long long countSubarrays(vector<int> &nums, long long k) {
+    long long total = 0ll, ans = 0ll;
+    for (int hh = 0, tt = 0; tt < nums.size(); tt++) {
+      total += static_cast<long long>(nums[tt]);
+      while (hh <= tt && total * (tt - hh + 1) >= k) {
+        total -= nums[hh++];
+      }
+      ans += tt - hh + 1;
+    }
+    return ans;
+  }
+};
