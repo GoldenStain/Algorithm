@@ -55,6 +55,8 @@ public:
     heights.insert(heights.begin(), 0);
     heights.push_back(
         0); // 放两个padding的值，等价于原先Solution当中，把left和right数组初始化为非法值
+    // 如果while条件里加上等号，那么insert那里就要改成-1
+    // 如果while条件里改成等号，insert也保持0，那么循环内部计算答案的时候就需要加一个if语句判定栈是否为空
     std::vector<int> stk;
     int n = heights.size(), ans = 0;
     for (int i = 0; i < n; i++) {
