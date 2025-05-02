@@ -33,7 +33,7 @@ private:
     //   }
     // }
     int _count = 0, now_worker = workers.size() - 1;
-    // 因为我们的目标是完成targe个任务，所以只要考虑target个最小的任务就可以了
+    // 因为我们的目标是完成target个任务，所以只要考虑target个最小的任务就可以了
     for (int i = target - 1; i >= 0; i--) {
       // 把在吃了药以后，有资格胜任当前任务的worker都加进来
       while (now_worker >= 0 && workers[now_worker] + strength >= tasks[i]) {
