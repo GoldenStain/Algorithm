@@ -2062,3 +2062,14 @@ https://www.acwing.com/solution/content/16777/
 可以看看灵神的做法：https://leetcode.cn/problems/build-array-from-permutation/solutions/857713/mo-ni-by-endlesscheng-a7hu/
 
 而这个做法，又恰好和置换环非常相似，又结合了“原地哈希”的思想。说明这类问题应该都是能往这方面思考的。
+
+### 置换环解法：
+
+循环条件的解释：
+
+`while (nums[cur] != i)`
+
+对于一个置换环：
+`nums[k1]<-nums[k2]<-nums[k3]<-...<-nums[kn]<-nums[k1]`
+
+对于第一个和第n个，他们必须满足：`nums[kn] = k1`，反映到循环条件上，就是`nums[cur] == i`（i就是整个置换环开始的地方）
