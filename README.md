@@ -2073,3 +2073,7 @@ https://www.acwing.com/solution/content/16777/
 `nums[k1]<-nums[k2]<-nums[k3]<-...<-nums[kn]<-nums[k1]`
 
 对于第一个和第n个，他们必须满足：`nums[kn] = k1`，反映到循环条件上，就是`nums[cur] == i`（i就是整个置换环开始的地方）
+
+## Leetcode 3341. 到达最后一个房间的最少时间 I
+
+这道题可以证明，它是符合Dijkstra算法性质的。
