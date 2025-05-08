@@ -2077,3 +2077,7 @@ https://www.acwing.com/solution/content/16777/
 ## Leetcode 3341. 到达最后一个房间的最少时间 I
 
 这道题可以证明，它是符合Dijkstra算法性质的。
+
+## Leetcode 3342. 到达最后一个房间的最少时间 II
+
+这道题条件改变之后，依然是符合Dijkstra算法性质的。

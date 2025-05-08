@@ -31,7 +31,9 @@ private:
   struct _Point {
     int x, y;
     int dis;
+    // C++17可以在不写构造函数的情况下，直接用{}结构化初始化，但是C++14不行，需要显式地写一个
     _Point(int _x, int _y, int _dis) : x(_x), y(_y), dis(_dis) {}
+    // 注意这个重载小于号必须是const，priority_queue对这个有硬性要求
     bool operator<(const _Point &other) const { return dis > other.dis; }
   };
 
