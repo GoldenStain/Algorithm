@@ -11,7 +11,7 @@
                 "_UNICODE"
             ],
             "compilerPath": "/usr/lib/ccache/clang++",
-            "cppStandard": "c++20",
+            "cppStandard": "c++23",
             "cStandard": "c99"
         }
     ],
