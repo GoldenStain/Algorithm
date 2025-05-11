@@ -72,3 +72,50 @@ public:
     return dfs(9, n1, total >> 1) * fac[n1] % MOD * fac[n - n1] % MOD;
   }
 };
+
+// DP solution
+class Solution {
+public:
+  int countBalancedPermutations(string num) {
+    int cnt[10]{};
+    int total = 0;
+    for (char c : num) {
+      cnt[c - '0']++;
+      total += c - '0';
+    }
+
+    if (total % 2) {
+      return 0;
+    }
+
+    int n = num.size();
+    int n1 = n / 2;
+    vector f(n1 + 1, vector<int>(total / 2 + 1));
+    f[0][0] = 1;
+    int sc = 0, s = 0;
+    for (int i = 0; i < 10; i++) {
+      int c = cnt[i];
+      // sc是总个数，s是总和
+      sc += c;
+      s += c * i;
+      // 保证 left2 <= n-n1，即 left1 >= sc-(n-n1)
+      // 只要最外层是倒序循环，就能保证我们每次使用的都是上一轮的值，内部正序倒序均可，只要满足物理意义即可.
+      for (int left1 = min(sc, n1); left1 >= max(sc - (n - n1), 0); left1--) {
+        int left2 = sc - left1;
+        // 保证分给第二个集合的元素和 <= total/2，即 leftS >= s-total/2
+        for (int left_s = min(s, total / 2); left_s >= max(s - total / 2, 0);
+             left_s--) {
+          int res = 0;
+          for (int k = max(c - left2, 0); k <= min(c, left1) && k * i <= left_s;
+               k++) {
+            res = (res + f[left1 - k][left_s - k * i] * INV_F[k] % MOD *
+                             INV_F[c - k]) %
+                  MOD;
+          }
+          f[left1][left_s] = res;
+        }
+      }
+    }
+    return F[n1] * F[n - n1] % MOD * f[n1][total / 2] % MOD;
+  }
+};
