@@ -2097,3 +2097,11 @@ lc上其他更快的做法，都是在入队时遇到终点就直接返回，但
 某个点一开始很劣，但是它后面扩展出的其他路径却相对更优，实现了“反超”。
 
 因此，我们是能够**在入队时遇到终点就返回**的。
+
+## Leetcode 3343. 统计平衡排列的数目
+
+参考题解：https://leetcode.cn/problems/count-number-of-balanced-permutations/solutions/2975507/duo-zhong-ji-pai-lie-shu-ji-shu-dppython-42ky/
+
+这道题的**奇数下标**，**偶数下标**实际上并不重要，问题的本质是：
+
+把字符串`num`分割成两个满足条件的多重集，分别在其内部进行独立的全排序。
