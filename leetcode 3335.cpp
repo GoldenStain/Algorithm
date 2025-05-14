@@ -23,7 +23,7 @@ public:
   }
 };
 
-// matrix multiple solution
+// matrix multiply solution
 constexpr int MOD = 1e9 + 7;
 
 class Solution {
