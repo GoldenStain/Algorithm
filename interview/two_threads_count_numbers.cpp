@@ -34,7 +34,49 @@ void testAtomic(int range) {
 }
 } // namespace AtomicWay
 
+namespace CVWay {
+class CVCount {
+public:
+  CVCount(int _range) : range(_range) {}
+
+  void printEvenAtomic() {
+    for (int i = 0; i < range; i += 2) {
+      std::unique_lock<std::mutex> lock(m_lock);
+      cv.wait(lock, [&]() { return !(current & 1); });
+      std::cout << "CVCount_Even: " << current << std::endl;
+      current++;
+      cv.notify_all();
+    }
+  }
+
+  void printOddAtomic() {
+    for (int i = 0; i < range; i += 2) {
+      std::unique_lock<std::mutex> lock(m_lock);
+      cv.wait(lock, [&]() { return (current & 1); });
+      std::cout << "CVCount_Odd: " << current << std::endl;
+      current++;
+      cv.notify_all();
+    }
+  }
+
+private:
+  int current = 0;
+  std::condition_variable cv;
+  std::mutex m_lock;
+  int range;
+};
+
+void test_cv(int range) {
+	CVCount cv_count = CVCount(50);
+	auto t1 = std::thread(&CVCount::printEvenAtomic, &cv_count);
+	auto t2 = std::thread(&CVCount::printOddAtomic, &cv_count);
+	t1.join();
+	t2.join();
+}
+} // namespace CVWay
+
 int main() {
-  AtomicWay::testAtomic(50);
+//   AtomicWay::testAtomic(50);
+  CVWay::test_cv(50);
   return 0;
 }
