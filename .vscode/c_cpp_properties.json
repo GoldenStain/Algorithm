@@ -10,7 +10,7 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "/usr/lib/ccache/clang++",
+            "compilerPath": "/usr/bin/clang++",
             "cppStandard": "c++23",
             "cStandard": "c99"
         }
