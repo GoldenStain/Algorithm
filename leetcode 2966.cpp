@@ -15,3 +15,20 @@ public:
     return ans;
   }
 };
+
+// faster version, only replace emplace_back with push_back
+class Solution {
+public:
+  vector<vector<int>> divideArray(vector<int> &nums, int k) {
+    int n = nums.size();
+    std::sort(nums.begin(), nums.end());
+    std::vector<std::vector<int>> ans;
+    for (int i = 0; i + 3 <= n; i += 3) {
+      if (nums[i + 2] - nums[i] > k) {
+        return std::vector<std::vector<int>>{};
+      }
+      ans.push_back({nums[i], nums[i + 1], nums[i + 2]});
+    }
+    return ans;
+  }
+};
