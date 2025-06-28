@@ -2194,3 +2194,8 @@ lc上其他更快的做法，都是在入队时遇到终点就直接返回，但
 
 画了个图帮助理解。
 ![alt text](image.png)
+
+## Leetcode 392. 判断子序列
+
+这篇题解写的非常好
+https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pythonjavaccgojsrust-by-e-mz22/
