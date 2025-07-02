@@ -2207,3 +2207,8 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 上面的那个条件就是保证，在dfs的同一层，重复的数字当中，只有第一个会被选中（这样的话，1a1b之间的顺序就是固定的了，即1a一定在1b的前面）因为如果在dfs的第step层，1a已经被选中了，说明1a在前面的位置就已经放入排列中，在这个位置上我们就可以放心地选1b了，很显然，在这么做之前，我们需要先给输入数组排个序，让相同的数字排在一起。
 
 2. 给所有输入数字做一个哈希，基于这个哈希表去进行全排列，就能保证`1a1b`的顺序固定了（即`1b1a`和`1a1b`完全等价了，只会计算一次贡献），这样子也就不需要vis数组了，哈希表本身就充当了vis数组的作用。
+
+## Leetcode 2014. 重复 K 次的最长子序列
+
+这道题是全排列+判断子序列的组合，所以才把这两道题放在前面。
+优秀题解： https://leetcode.cn/problems/longest-subsequence-repeated-k-times/solutions/1006067/mei-ju-pai-lie-zi-xu-lie-pi-pei-by-endle-oi2h/?envType=daily-question&envId=2025-06-27
