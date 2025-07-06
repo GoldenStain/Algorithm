@@ -2214,3 +2214,8 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 优秀题解： https://leetcode.cn/problems/longest-subsequence-repeated-k-times/solutions/1006067/mei-ju-pai-lie-zi-xu-lie-pi-pei-by-endle-oi2h/?envType=daily-question&envId=2025-06-27
 
 注意在普通解法和next数组解法当中，cur分别表示：模板数组template当中的下标；以及待匹配数组string当中的下标，二者的物理意义不同。
+
+## Leetcode 224. 基本计算器
+
+之前在ACWing做过，复习巩固一下。
+在大部分情况下，使用STL容器之前要注意判断是否为空
