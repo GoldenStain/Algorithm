@@ -50,3 +50,23 @@ private:
     return s_idx > idx;
   }
 };
+
+// better solution
+class Solution {
+public:
+  bool isValid(string s) {
+    std::vector<char> chars;
+    chars.reserve(s.size());
+    std::unordered_map<char, char> cm = {{')', '('}, {']', '['}, {'}', '{'}};
+    for (int i = 0; i < s.size(); i++) {
+      if (s[i] == '(' || s[i] == '[' || s[i] == '{')
+        chars.push_back(s[i]);
+      else {
+        if (chars.empty() || chars.back() != cm[s[i]])
+          return false;
+        chars.pop_back();
+      }
+    }
+    return chars.empty();
+  }
+};
