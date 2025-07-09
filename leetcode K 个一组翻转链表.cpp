@@ -42,3 +42,47 @@ public:
     precedor = new_precedor;
   }
 };
+
+// recursive solution
+class Solution {
+public:
+  ListNode *reverseKGroup(ListNode *head, int k) {
+    dummy->next = head;
+    bool do_reverse = true;
+    ListNode *left_node = dummy;
+    while (do_reverse) {
+      ListNode *st = left_node->next;
+      ListNode *ed = left_node;
+      for (int i = 1; i <= k; i++) {
+        ed = ed->next;
+        if (!ed) {
+          // 先赋值再break，不然白赋值了
+          do_reverse = false;
+          break;
+        }
+      }
+      if (!do_reverse)
+        break;
+      ed = ed->next;
+      ListNode *reversedHead = reverseOneGroup(st, ed);
+      left_node->next->next = ed;
+      left_node->next = reversedHead;
+      left_node = st;
+    }
+    return dummy->next;
+  }
+
+private:
+  ListNode *dummy = new ListNode(-1);
+  // 区间：[st, ed)
+  ListNode *reverseOneGroup(ListNode *cur, ListNode *ed) {
+    if (cur->next == ed) {
+      return cur;
+    }
+    ListNode *reverseHead = reverseOneGroup(cur->next, ed);
+    // 把next的next指向自己，进行翻转
+    cur->next->next = cur;
+    cur->next = nullptr;
+    return reverseHead;
+  }
+};
