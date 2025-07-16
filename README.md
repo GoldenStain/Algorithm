@@ -2224,3 +2224,7 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 
 我们的写法隐含了'('优先级为0的设置（unordered_map会给这个键赋默认值)，例如：
 `5+2*(-3)`这个式子，因为左括号把负号和乘法隔开了，乘号的优先级影响不到后面，我们就能保证这个乘法不会被错误地提前计算，而是在括号内负号算好之后才计算。
+
+## Leetcode 207. 课程表
+
+拓扑排序板子题。
