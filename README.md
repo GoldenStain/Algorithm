@@ -2237,3 +2237,6 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 ## 210. 课程表 II
 
 用了BFS和DFS两种写法。
+
+## 35. 搜索插入位置
+二分板子题，像这种二分类的问题，题目一般都会有corner case，这种corner case如果没办法优雅地融进二分算法里面，可以直接特判筛掉。
