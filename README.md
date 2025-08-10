@@ -2244,3 +2244,7 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 ## 74. 搜索二维矩阵
 
 二分板子题，但是注意有个坑别踩了，写在注释里了。
+
+## 162. 寻找峰值
+
+注意这道题不能用三分，三分是用来求解**单峰函数**问题的。
