@@ -2248,3 +2248,8 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 ## 162. 寻找峰值
 
 注意这道题不能用三分，三分是用来求解**单峰函数**问题的。
+
+## 34. 在排序数组中查找元素的第一个和最后一个位置
+
+二分板子题目，可以注意一下lower_bound和upper_bound属于哪个头文件；
+记住在重载小于号的情况下，这两个接口会返回什么结果。
