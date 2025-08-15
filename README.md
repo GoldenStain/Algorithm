@@ -2253,3 +2253,5 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 
 二分板子题目，可以注意一下lower_bound和upper_bound属于哪个头文件；
 记住在重载小于号的情况下，这两个接口会返回什么结果。
+
+自己实现的版本因为下标上界是n-1,所以在数组长度为1,或者全都小于等于目标值的情况下会出问题,需要提前在数组末尾padding一个无限大的值.

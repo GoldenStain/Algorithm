@@ -1,30 +1,56 @@
+#include <algorithm>
+#include <climits>
+#include <cmath>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <stack>
-#include <cmath>
+#include <vector>
 
-class MinStack {
-   public:
-    MinStack() {}
-
-    void push(int val) {
-        _normal_stack.push(val);
-        if (_min_stack.empty() || val <= _min_stack.top()) _min_stack.push(val);
+namespace leetcode {
+template <typename T> using vector = std::vector<T>;
+template <typename T> using function = std::function<T>;
+class Solution {
+public:
+  vector<int> searchRange(vector<int> &nums, int target) {
+    vector<int> ans;
+    nums.push_back(INT_MAX);
+    int n = nums.size();
+    function<int()> find_lower = [&]() -> int {
+      int l = 0, r = n - 1;
+      while (l < r) {
+        int mid = (l + r) >> 1;
+        if (nums[mid] >= target) {
+          r = mid;
+        } else {
+          l = mid + 1;
+        }
+      }
+      return l;
+    };
+    function<int()> find_upper = [&]() -> int {
+      int l = 0, r = n - 1;
+      while (l < r) {
+        int mid = (l + r) >> 1;
+        if (nums[mid] > target) {
+          r = mid;
+        } else {
+          l = mid + 1;
+        }
+      }
+      return l;
+    };
+    int lower_pos = find_lower();
+    if (lower_pos == n || nums[lower_pos] != target) {
+      ans = {-1, -1};
+    } else {
+      int upper_pos = find_upper();
+      ans = {lower_pos, upper_pos - 1};
     }
-
-    void pop() {
-        int result = _normal_stack.top();
-        _normal_stack.pop();
-        if (result == _min_stack.top()) _min_stack.pop();
-    }
-
-    int top() { return _normal_stack.top(); }
-
-    int getMin() { return _min_stack.top(); }
-
-   private:
-    std::stack<int> _normal_stack, _min_stack;
+    return ans;
+  }
 };
+}; // namespace leetcode
 
 /**
  * Your MinStack object will be instantiated and called as such:
@@ -36,6 +62,6 @@ class MinStack {
  */
 
 int main() {
-    int x = 20000;
-    std::cout << std::log2(x) << std::endl;
+  int x = 20000;
+  std::cout << std::log2(x) << std::endl;
 }
