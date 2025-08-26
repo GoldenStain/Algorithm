@@ -19,6 +19,7 @@ def resolve(x, primes):
             while x % pi == 0:
                 x //= pi
     # 记得不要漏掉x本身是质数的情况
+    # 或者说有大于根号x的质数，前面筛不出来
     if x > 1:
         res.append(x)
     return res
