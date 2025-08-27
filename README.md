@@ -2257,3 +2257,7 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 
 ## 153. 寻找旋转排序数组中的最小值
 这道题的输入case和前面的leetcode 33一模一样，关键是利用`nums[0]`的特性来解题。
+
+## 827. 最大人工岛
+
+先flood fill，然后通过判重来计算合并后的岛屿面积。

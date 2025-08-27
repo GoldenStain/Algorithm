@@ -11,7 +11,7 @@
                 "_UNICODE"
             ],
             "compilerPath": "/usr/bin/clang++",
-            "cppStandard": "c++23",
+            "cppStandard": "c++20",
             "cStandard": "c99"
         }
     ],
