@@ -2261,3 +2261,5 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 ## 827. 最大人工岛
 
 先flood fill，然后通过判重来计算合并后的岛屿面积。
+这道题最好用dfs，因为用bfs不好算面积。
+要记得被修改的那一个格子本身，他也占有1的面积
