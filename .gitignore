@@ -37,3 +37,5 @@ test*
 test*.cpp
 test.*
 *.txt
+
+.vscode/
