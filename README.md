@@ -2264,3 +2264,21 @@ https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pyt
 先flood fill，然后通过判重来计算合并后的岛屿面积。
 这道题最好用dfs，因为用bfs不好算面积。
 要记得被修改的那一个格子本身，他也占有1的面积
+
+## 673. 最长递增子序列的个数
+
+之前自己也想到了用树状数组解决这个问题，但是没有深入地去思考整理出来。
+优秀博客：https://writings.sh/post/find-number-of-lis
+注意这里（以update为例，query也是同理）：
+```cpp
+while (pos <= upper) {
+    if (x.f > arr[pos].f)
+        arr[pos].g = 0;
+    if (x.f >= arr[pos].f)
+        arr[pos].g += x.g;
+    arr[pos].f = std::max(arr[pos].f, x.f);
+    pos += pos & (-pos);
+}
+```
+这里的第二个`if`，从逻辑上来说明明应该写等于的，为什么要写大于等于呢？
+**因为**前面的大于号保证了`g`能够被正确更新，而这里写成大于等于，应该是为了保证在初始值（`g`还是0的情况下）时，能够正确更新（物理意义下`g`最小只能是1，但刚初始化的时候`g`还是0）
