@@ -1,41 +1,54 @@
 from typing import List
+from dataclasses import dataclass
+import bisect
+
+@dataclass
+class T:
+    f: int = 0
+    g: int = 0
+
+class BIT:
+    def __init__(self, upper):
+        self.upper = upper
+        # T是可变对象，导致这里数组中所有元素本质上都是同一个T实例
+        # self.arr = [T(0, 0)] * (upper + 1)
+        self.arr = [T(0, 0) for _ in range(upper + 1)]
+    def query(self, pos: int):
+        f = 0; g = 0
+        while pos:
+            if f < self.arr[pos].f:
+                g = 0
+            if f <= self.arr[pos].f:
+                g += self.arr[pos].g
+            f = max(f, self.arr[pos].f)
+            pos -= (pos & (-pos))
+        return T(f, g)
+
+    def update(self, pos:int, x: T):
+        while pos <= self.upper:
+            if x.f > self.arr[pos].f:
+                self.arr[pos].g = 0
+            if x.f >= self.arr[pos].f:
+                self.arr[pos].g += x.g
+            self.arr[pos].f = max(self.arr[pos].f, x.f)
+            pos += (pos & (-pos))
+
+def discrete(nums):
+    vals = set(nums)
+    vals = sorted(vals)
+    for i in range(len(nums)):
+        nums[i] = bisect.bisect_left(vals, nums[i]) + 1
+    return len(vals)
+
 
 class Solution:
-    def largestIsland(self, grid: List[List[int]]) -> int:
+    def findNumberOfLIS(self, nums: List[int]) -> int:
+        n = len(nums)
+        m = discrete(nums)
 
-        area: List[int] = []
-        n = len(grid)
-
-        def dfs(i: int, j: int) -> int:
-            size: int = 1
-            grid[i][j] = len(area) + 2
-            for x, y in ((i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)):
-                if x < 0 or x >= n or y < 0 or y >= n or grid[x][y] != 1:
-                    continue
-                size += dfs(x, y)
-            return size
-
-        for i, row in enumerate(grid):
-            for j, x in enumerate(row):
-                if x == 1:
-                    area.append(dfs(i, j))
-
-        # 没有岛屿
-        if not area:
-            return 1
-
-        ans = 0
-
-        # 人工填充
-        for i , row in enumerate(grid):
-            for j, x in enumerate(row):
-                if x:
-                    continue
-                S = set()
-                for nx, ny in ((i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)):
-                    if nx < 0 or nx >= n or ny < 0 or ny >= n or not grid[nx][ny]:
-                        continue
-                    S.add(grid[nx][ny])
-                ans = max(ans, 1 + sum(area[t - 2] for t in S))
-
-        return n**2 if not ans else ans
+        bit = BIT(m)
+        for x in nums:
+            t = bit.query(x - 1)
+            f = t.f; g = t.g
+            bit.update(x, T(f + 1, max(g, 1)))
+        return bit.query(m).g
