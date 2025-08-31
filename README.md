@@ -2285,3 +2285,7 @@ while (pos <= upper) {
 
 并且，这个做法的物理意义也和原来的二分法不同，二分法/原始DP当中，`dp[i]`表示，以`num[i]`结尾的最长子序列能有多长；
 而在这里，我们的树状数组是在值域上建立的，`bit[x].f`表示，在不超过`x`的值当中，最长子序列能有多长；`bit[x].g`相应地，表示这样的序列有多少个。
+
+## 1326. 灌溉花园的最少水龙头数目
+
+可以参考灵神的题解：https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/
