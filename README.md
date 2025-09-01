@@ -2289,3 +2289,9 @@ while (pos <= upper) {
 ## 1326. 灌溉花园的最少水龙头数目
 
 可以参考灵神的题解：https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/
+
+## 668. 乘法表中第k小的数
+
+这道题的关键是要将其转化为一个**二分答案**问题，之后再以行为单位进行检索，提高check的速度。
+题解：https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/description/
+利用**反证法**证明最后得到的数字一定在乘法表中。
