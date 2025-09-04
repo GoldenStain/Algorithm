@@ -1,5 +1,4 @@
 from typing import List
-
 class Solution:
     M = 1e9 + 7
     def sumSubarrayMins(self, arr: List[int]) -> int:
@@ -13,4 +12,4 @@ class Solution:
                 left = stk[-1]; right = i
                 ans = (ans + arr[center] * (right - center) * (center - left)) % self.M
             stk.append(i)
-        return int(ans) 
+        return int(ans)
