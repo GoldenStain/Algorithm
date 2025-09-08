@@ -48,7 +48,7 @@ public:
   }
 };
 
-// hand-written stack
+// hand-written heap 
 class Solution {
 public:
   int findKthLargest(vector<int> &nums, int k) {

@@ -1921,6 +1921,10 @@ https://www.acwing.com/solution/content/16777/
 
 ### 堆解法
 这道题可以自己手写堆，也可以直接用STL的`std::make_heap`函数。
+在手写堆的时候，要注意：
+1. 要实现heapify，没必要把down和up都写出来，只要一个down就够了
+2. 如果通过up操作初始化，那应该从上往下up（从有序部分走到无序部分）
+3. 如果是通过down操作初始化，同理应该从下往上down
 
 ## Leetcode 4. 寻找两个正序数组的中位数
 
