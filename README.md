@@ -2382,3 +2382,8 @@ while (pos <= upper) {
 做的时候没想到，直接暴力DFS，加了一个深度限制，拿了80分
 
 3. 第三题，整体思路都OK，在能到达right_better的情况下，我的策略是对的：如果油小于distance，那就加到刚好distance，到下一站的时候刚好没油；否则就完全不用加。 但是在无法到达right_better的情况下，我的思路就过分简单粗暴了————我直接尽量往右开了。但实际上，哪怕这些加油站都不如当前点，**但是他们内部也是存在局部最优**的，我们应该通过RMQ查询，开到这些加油站当中的**局部最优点**上，而不是无脑向右开。
+
+## 295. 数据流的中位数
+
+可以参考灵神的题解，讲的非常透彻：
+https://leetcode.cn/problems/find-median-from-data-stream/solutions/3015873/ru-he-zi-ran-yin-ru-da-xiao-dui-jian-ji-4v22k/?envType=study-plan-v2&envId=top-interview-150
