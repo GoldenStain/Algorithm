@@ -35,3 +35,15 @@ public:
       return worker(nums, i, r, k);
   }
 };
+
+// STL solution
+class Solution {
+public:
+  int findKthLargest(vector<int> &nums, int k) {
+    int n = nums.size();
+    std::priority_queue<int, std::vector<int>> q(nums.begin(), nums.end());
+    for (int i = 0; i < k - 1; i++)
+      q.pop();
+    return q.top();
+  }
+};
