@@ -51,6 +51,12 @@ public:
             leftMax = std::max(leftMax, height[l]);
             rightMax = std::max(rightMax, height[r]);
             if (leftMax < rightMax)
+            // 和 if (height[left]  < height[right])是等价的
+            // 因为当height[left] < height[right]的时候，我们可以证明出leftMax < rightMax.
+            // 此时，如果leftMax >= rightMax, 因为height[left] < height[right] 
+            // 所以必然是0~left-1的某个Height[x] >= height[right]
+            // 而既然存在这样的height[x]  那么根据我们的指针移动规则，当前的right指针肯定会在更左边的位置
+            // 因此这样的x不存在
                 ans += leftMax - height[l++];
             else
                 ans += rightMax - height[r--];
