@@ -35,3 +35,44 @@ public:
       return worker(nums, i, r, k);
   }
 };
+
+// STL solution
+class Solution {
+public:
+  int findKthLargest(vector<int> &nums, int k) {
+    int n = nums.size();
+    std::priority_queue<int, std::vector<int>> q(nums.begin(), nums.end());
+    for (int i = 0; i < k - 1; i++)
+      q.pop();
+    return q.top();
+  }
+};
+
+// hand-written heap 
+class Solution {
+public:
+  int findKthLargest(vector<int> &nums, int k) {
+    // 预处理
+    int n = nums.size();
+    auto down = [&](this auto &&self, int x) -> void {
+      int t = x;
+      if (x * 2 + 1 < n && nums[x * 2 + 1] > nums[t])
+        t = x * 2 + 1;
+      if (x * 2 + 2 < n && nums[x * 2 + 2] > nums[t])
+        t = x * 2 + 2;
+      if (x != t) {
+        std::swap(nums[x], nums[t]);
+        self(t);
+      }
+    };
+    // 预处理
+    for (int i = (n - 2) / 2; ~i; i--)
+      down(i);
+    for (int i = 0; i < k - 1; i++) {
+      std::swap(nums[0], nums[n - 1]);
+      n--;
+      down(0);
+    }
+    return nums[0];
+  };
+};
