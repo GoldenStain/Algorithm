@@ -128,8 +128,8 @@ void Producer(ThreadPool& pool, int proudcer_id, int num_tasks) {
 }
 
 int main() { 
-    const int num_producers = 4, num_tasks_per_producer = 10, num_threads_in_pool = 2;
-    ThreadPool pool(8);
+    const int num_producers = 4, num_tasks_per_producer = 10, num_threads_in_pool = 8;
+    ThreadPool pool(num_threads_in_pool);
     std::vector<std::thread> producers;
     for (int i = 0; i < num_producers; i++) {
         producers.emplace_back(Producer, std::ref(pool), i, num_tasks_per_producer);
