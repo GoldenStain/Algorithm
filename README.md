@@ -1212,6 +1212,10 @@ while (check() && l <= r) {
 
 单调栈为了保持单调性会丢失部分信息，但是我们的132模式高度依赖于可能会被抛弃的信息，所以我们需要用额外的变量来记录被抛弃掉的部分，这也就是正解中解法2的来历。
 
+### 2025.9.18 update
+
+增加了solution 4，既可以处理数据流输入（即正向循环），还保持了O(n)的复杂度。
+
 ## Leetcode 32. 最长有效括号
 
 这道题的解法三和蓝桥杯曾经考过的一个DP题有点像，不过那个DP题更复杂，这个技巧仅仅是里面的步骤之一。
@@ -2391,3 +2395,8 @@ while (pos <= upper) {
 
 可以参考灵神的题解，讲的非常透彻：
 https://leetcode.cn/problems/find-median-from-data-stream/solutions/3015873/ru-he-zi-ran-yin-ru-da-xiao-dui-jian-ji-4v22k/?envType=study-plan-v2&envId=top-interview-150
+
+
+## 1478. 安排邮筒
+
+这道题的DP思路有点类似于计算贡献，我们不去根据房子确定哪些房子属于哪些邮筒的管辖范围内，而是从邮筒出发，去计算它对房子的贡献。

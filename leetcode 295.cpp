@@ -21,6 +21,6 @@ public:
   }
 
 private:
-  std::priority_queue<int, vector<int>, std::greater<>> left;
-  std::priority_queue<int, vector<int>, std::less<>> right;
+  std::priority_queue<int, vector<int>> left; // 大根堆
+  std::priority_queue<int, vector<int>, std::greater<>> right; // 小根堆
 };
