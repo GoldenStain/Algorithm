@@ -2400,3 +2400,16 @@ https://leetcode.cn/problems/find-median-from-data-stream/solutions/3015873/ru-h
 ## 1478. 安排邮筒
 
 这道题的DP思路有点类似于计算贡献，我们不去根据房子确定哪些房子属于哪些邮筒的管辖范围内，而是从邮筒出发，去计算它对房子的贡献。
+
+## 205. 同构字符串
+
+## 778. 水位上升的泳池中游泳
+
+### 最短路解法
+只要给这个题目定义出相应的最短路含义，然后套用Dijkstra即可。
+### 二分法
+定义一个threshold，然后看看在这个threshold约束下，我们能不能到达终点。
+这个解法比最短路解法要慢不少。
+### 并查集
+比较巧妙，可以看看题解是怎么做的https://leetcode.cn/problems/swim-in-rising-water/solutions/582597/shui-wei-shang-sheng-de-yong-chi-zhong-y-xm9i/?envType=daily-question&envId=2025-10-06
+这道题因为有grid当中元素互不相同的条件，所以能很方便地应用并查集解法，当然即便没有这个附加条件，并查集解法也是可行的。
