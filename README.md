@@ -2414,3 +2414,7 @@ s和t构成一个双射，检查这个映射关系是否出错即可。
 ### 并查集
 比较巧妙，可以看看题解是怎么做的https://leetcode.cn/problems/swim-in-rising-water/solutions/582597/shui-wei-shang-sheng-de-yong-chi-zhong-y-xm9i/?envType=daily-question&envId=2025-10-06
 这道题因为有grid当中元素互不相同的条件，所以能很方便地应用并查集解法，当然即便没有这个附加条件，并查集解法也是可行的。
+
+## 3147. 从魔法师身上吸取的最大能量
+
+这道题要注意，有一个容易错的地方，写在注释里面了。
