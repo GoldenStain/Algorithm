@@ -1,18 +1,3 @@
-#include <algorithm>
-#include <climits>
-#include <cmath>
-#include <functional>
-#include <iostream>
-#include <memory>
-#include <numeric>
-#include <queue>
-#include <ranges>
-#include <stack>
-#include <unordered_map>
-#include <vector>
-
-template <typename T> using vector = std::vector<T>;
-namespace leetcode {
 using PII = std::pair<int, int>;
 using string = std::string;
 class Solution {
@@ -43,18 +28,3 @@ public:
     return ans;
   }
 };
-}; // namespace leetcode
-
-/**
- * Your MinStack object will be instantiated and called as such:
- * MinStack* obj = new MinStack();
- * obj->push(val);
- * obj->pop();
- * int param_3 = obj->top();
- * int param_4 = obj->getMin();
- */
-
-int main() {
-  int x = 20000;
-  std::cout << std::log2(x) << std::endl;
-}

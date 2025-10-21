@@ -41,3 +41,4 @@ tmp.*
 .vscode/
 tmp*
 tmp.py
+test.cpp
