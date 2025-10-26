@@ -34,7 +34,6 @@
 tmp.md
 *.txt
 test*
-test*.cpp
 test.*
 *.txt
 tmp.*
